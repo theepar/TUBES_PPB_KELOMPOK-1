@@ -1,547 +1,745 @@
 import 'package:flutter/material.dart';
 
+import '../talent.dart';
 import '../talent_data.dart';
 import 'detail_jasa_page.dart';
 import 'katalog_page.dart';
 import 'order_page.dart';
 import 'tambah_jasa_page.dart';
 
-class BerandaPage extends StatelessWidget {
+class BerandaPage extends StatefulWidget {
   const BerandaPage({super.key});
 
   @override
+  State<BerandaPage> createState() => _BerandaPageState();
+}
+
+class _BerandaPageState extends State<BerandaPage> {
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: colorScheme.primaryContainer,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(
-                Icons.work_outline_rounded,
-                size: 20,
-                color: colorScheme.primary,
-              ),
-            ),
-            const SizedBox(width: 12),
-            const Text(
-              'SewaSkill',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-        actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 16),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(
-              color: colorScheme.secondaryContainer.withValues(alpha: 0.6),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              'Kelompok 1',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: colorScheme.onSecondaryContainer,
-              ),
-            ),
-          ),
-        ],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 28),
-        children: [
-          _buildHeroCard(context, colorScheme),
-          const SizedBox(height: 20),
-          _buildSectionTitle(context, 'Navigasi Modul', Icons.explore_rounded),
-          const SizedBox(height: 12),
-          _buildQuickActions(context, colorScheme),
-          const SizedBox(height: 24),
-          _buildSectionTitle(context, 'Tentang Proyek', Icons.info_outline_rounded),
-          const SizedBox(height: 12),
-          _buildProjectOverview(context, colorScheme),
-          const SizedBox(height: 24),
-          _buildSectionTitle(context, 'Tim Pengembang', Icons.group_rounded),
-          const SizedBox(height: 12),
-          _buildTeamList(colorScheme),
-          const SizedBox(height: 24),
-          _buildSectionTitle(context, 'Status Modul Aplikasi', Icons.layers_rounded),
-          const SizedBox(height: 12),
-          _buildModuleStatusList(colorScheme),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHeroCard(BuildContext context, ColorScheme colorScheme) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: colorScheme.primaryContainer.withValues(alpha: 0.45),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: colorScheme.primary.withValues(alpha: 0.15),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(
-              color: colorScheme.primary,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: const Text(
-              'TUGAS BESAR I (UTS)',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.5,
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'SewaSkill Mobile',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: -0.5,
-                ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            'Platform digital pemesanan jasa freelance mikro (video editing, desain grafis, tutor koding, dan kepenulisan) berbasis mobile.',
-            style: TextStyle(
-              fontSize: 13.5,
-              height: 1.45,
-              color: colorScheme.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: 14),
-          Wrap(
-            spacing: 8,
-            runSpacing: 6,
-            children: [
-              _buildPill(colorScheme, 'Flutter'),
-              _buildPill(colorScheme, 'Dart'),
-              _buildPill(colorScheme, 'Material 3'),
-              _buildPill(colorScheme, 'Pemrograman Perangkat Bergerak'),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPill(ColorScheme colorScheme, String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: colorScheme.outlineVariant),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          fontSize: 11.5,
-          fontWeight: FontWeight.w500,
-          color: colorScheme.onSurface,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(BuildContext context, String title, IconData icon) {
-    return Row(
-      children: [
-        Icon(icon, size: 20, color: Theme.of(context).colorScheme.primary),
-        const SizedBox(width: 8),
-        Text(
-          title,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildQuickActions(BuildContext context, ColorScheme colorScheme) {
     final firstTalent = daftarTalent.isNotEmpty ? daftarTalent.first : null;
 
-    final actions = [
-      _ActionItem(
-        title: 'Katalog Jasa',
-        subtitle: 'Cari & telusuri talent',
-        icon: Icons.search_rounded,
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const KatalogPage()),
-          );
-        },
+    final pages = [
+      _BerandaView(
+        onExploreTap: () => _onItemTapped(1),
+        onOrderTap: () => _onItemTapped(2),
+        onAddTap: () => _onItemTapped(3),
       ),
-      _ActionItem(
-        title: 'Form Order',
-        subtitle: 'Kalkulasi & checkout',
-        icon: Icons.receipt_long_rounded,
-        onTap: () {
-          if (firstTalent != null) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => OrderPage(talent: firstTalent),
-              ),
-            );
-          }
-        },
-      ),
-      _ActionItem(
-        title: 'Daftar Jasa',
-        subtitle: 'Form pendaftaran talent',
-        icon: Icons.add_circle_outline_rounded,
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const TambahJasaPage()),
-          );
-        },
-      ),
-      _ActionItem(
-        title: 'Detail Talent',
-        subtitle: 'Profil & paket jasa',
-        icon: Icons.badge_outlined,
-        onTap: () {
-          if (firstTalent != null) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => DetailJasaPage(talent: firstTalent),
-              ),
-            );
-          }
-        },
-      ),
+      const KatalogPage(),
+      if (firstTalent != null)
+        OrderPage(talent: firstTalent)
+      else
+        const Scaffold(body: Center(child: Text('Data talent kosong'))),
+      const TambahJasaPage(),
     ];
 
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: actions.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-        childAspectRatio: 1.6,
+    return Scaffold(
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: pages,
       ),
-      itemBuilder: (context, index) {
-        final item = actions[index];
-        return Material(
-          color: colorScheme.surface,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
-            side: BorderSide(
-              color: colorScheme.outlineVariant.withValues(alpha: 0.6),
-            ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: _onItemTapped,
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home_rounded),
+            label: 'Beranda',
           ),
-          child: InkWell(
-            onTap: item.onTap,
-            borderRadius: BorderRadius.circular(14),
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
+          NavigationDestination(
+            icon: Icon(Icons.search_rounded),
+            selectedIcon: Icon(Icons.saved_search_rounded),
+            label: 'Katalog',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.shopping_bag_outlined),
+            selectedIcon: Icon(Icons.shopping_bag_rounded),
+            label: 'Order',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.add_circle_outline_rounded),
+            selectedIcon: Icon(Icons.add_circle_rounded),
+            label: 'Tambah',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BerandaView extends StatelessWidget {
+  final VoidCallback onExploreTap;
+  final VoidCallback onOrderTap;
+  final VoidCallback onAddTap;
+
+  const _BerandaView({
+    required this.onExploreTap,
+    required this.onOrderTap,
+    required this.onAddTap,
+  });
+
+  void _showProjectModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) {
+        final colorScheme = Theme.of(ctx).colorScheme;
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 36,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: colorScheme.outlineVariant,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
                 children: [
-                  Icon(item.icon, color: colorScheme.primary, size: 24),
-                  const SizedBox(height: 8),
-                  Text(
-                    item.title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 13.5,
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: colorScheme.primaryContainer,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(
+                      Icons.info_outline_rounded,
+                      color: colorScheme.primary,
+                      size: 20,
                     ),
                   ),
-                  Text(
-                    item.subtitle,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: colorScheme.onSurfaceVariant,
-                    ),
+                  const SizedBox(width: 12),
+                  const Text(
+                    'Informasi Proyek',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
-            ),
+              const SizedBox(height: 16),
+              const Text(
+                'SewaSkill Mobile adalah aplikasi pemesanan jasa freelance mikro untuk memenuhi penugasan Tugas Besar I (UTS) mata kuliah Pemrograman Perangkat Bergerak.',
+                style: TextStyle(fontSize: 13, height: 1.5),
+              ),
+              const SizedBox(height: 16),
+              _buildDetailItem('Mata Kuliah', 'Pemrograman Perangkat Bergerak (PPB)'),
+              _buildDetailItem('Tugas', 'Tugas Besar I (UTS) - Kelompok 1'),
+              _buildDetailItem('Tech Stack', 'Flutter, Dart, Material 3'),
+              _buildDetailItem('Target OS', 'Android & iOS'),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  child: const Text('Tutup'),
+                ),
+              ),
+            ],
           ),
         );
       },
     );
   }
 
-  Widget _buildProjectOverview(BuildContext context, ColorScheme colorScheme) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: colorScheme.outlineVariant.withValues(alpha: 0.6),
-        ),
-      ),
-      child: Column(
+  static Widget _buildDetailItem(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Aplikasi SewaSkill dirancang untuk mempermudah transaksi jasa freelance digital berskala mikro secara cepat, transparan, dan terstruktur.',
-            style: TextStyle(fontSize: 13, height: 1.45),
+          SizedBox(
+            width: 110,
+            child: Text(
+              label,
+              style: const TextStyle(fontSize: 12.5, color: Colors.grey),
+            ),
           ),
-          const SizedBox(height: 14),
-          const Divider(height: 1),
-          const SizedBox(height: 14),
-          _buildInfoRow('Mata Kuliah', 'Pemrograman Perangkat Bergerak (PPB)'),
-          const SizedBox(height: 8),
-          _buildInfoRow('Tipe Tugas', 'Tugas Besar I (UTS) - Semester Genap'),
-          const SizedBox(height: 8),
-          _buildInfoRow('Kelompok', 'Kelompok 1'),
-          const SizedBox(height: 8),
-          _buildInfoRow('Teknologi', 'Flutter SDK 3 & Material Design 3'),
+          const Text(': ', style: TextStyle(fontSize: 12.5, color: Colors.grey)),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600),
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 100,
-          child: Text(
-            label,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              color: Colors.grey,
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Scaffold(
+      appBar: AppBar(
+        titleSpacing: 16,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'SewaSkill',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              'Tugas Besar PPB • Kelompok 1',
+              style: TextStyle(
+                fontSize: 11.5,
+                fontWeight: FontWeight.normal,
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          IconButton(
+            onPressed: () => _showProjectModal(context),
+            icon: const Icon(Icons.info_outline_rounded),
+            tooltip: 'Info Proyek',
+          ),
+          const SizedBox(width: 8),
+        ],
+      ),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+        children: [
+          _buildHeroBanner(context, colorScheme),
+          const SizedBox(height: 16),
+          _buildMetricsRow(colorScheme),
+          const SizedBox(height: 20),
+          _buildTeamSection(colorScheme),
+          const SizedBox(height: 20),
+          _buildQuickActionCards(context, colorScheme),
+          const SizedBox(height: 24),
+          _buildTalentHeader(context),
+          const SizedBox(height: 12),
+          _buildTalentList(context, colorScheme),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeroBanner(BuildContext context, ColorScheme colorScheme) {
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            colorScheme.primaryContainer,
+            colorScheme.primaryContainer.withValues(alpha: 0.6),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: colorScheme.primary,
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: const Text(
+              'TUGAS BESAR I',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 10.5,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.5,
+              ),
             ),
           ),
-        ),
-        const Text(': ', style: TextStyle(fontSize: 12, color: Colors.grey)),
-        Expanded(
-          child: Text(
-            value,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
+          const SizedBox(height: 10),
+          Text(
+            'Solusi Jasa Freelance Mikro',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: -0.3,
+                ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Cari keahlian edit video, desain, koding, dan kepenulisan langsung dari aplikasi.',
+            style: TextStyle(
+              fontSize: 12.5,
+              color: colorScheme.onPrimaryContainer,
+              height: 1.4,
             ),
+          ),
+          const SizedBox(height: 12),
+          FilledButton.icon(
+            onPressed: onExploreTap,
+            icon: const Icon(Icons.explore_rounded, size: 16),
+            label: const Text('Jelajahi Katalog'),
+            style: FilledButton.styleFrom(
+              visualDensity: VisualDensity.compact,
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMetricsRow(ColorScheme colorScheme) {
+    return Row(
+      children: [
+        _buildMetricItem(colorScheme, '5', 'Anggota Tim', Icons.people_outline_rounded),
+        const SizedBox(width: 8),
+        _buildMetricItem(colorScheme, '4', 'Talent Siap', Icons.badge_outlined),
+        const SizedBox(width: 8),
+        _buildMetricItem(colorScheme, 'M3', 'Material UI', Icons.palette_outlined),
+      ],
+    );
+  }
+
+  Widget _buildMetricItem(
+    ColorScheme colorScheme,
+    String value,
+    String label,
+    IconData icon,
+  ) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+          ),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, size: 18, color: colorScheme.primary),
+            const SizedBox(height: 4),
+            Text(
+              value,
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 10.5,
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTeamSection(ColorScheme colorScheme) {
+    const team = [
+      _TeamMember('Fadhil R.', '@fadhilr2', 'FR'),
+      _TeamMember('I Putu Gede Deva G.', '@theepar', 'DG'),
+      _TeamMember('Adita R.', '@aditarhm', 'AR'),
+      _TeamMember('Jeni', '@ejeniamutiara', 'JN'),
+      _TeamMember('Abdurrahman S.', '@JustAHermit', 'AS'),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Tim Pengembang',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: colorScheme.secondaryContainer.withValues(alpha: 0.7),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                'Kelompok 1',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: colorScheme.onSecondaryContainer,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          height: 105,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: team.length,
+            separatorBuilder: (_, _) => const SizedBox(width: 8),
+            itemBuilder: (context, index) {
+              final m = team[index];
+              return Container(
+                width: 120,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: colorScheme.surface,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+                  ),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 16,
+                      backgroundColor: colorScheme.primaryContainer,
+                      child: Text(
+                        m.initials,
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: colorScheme.primary,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      m.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      m.github,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 9.5,
+                        fontFamily: 'monospace',
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
         ),
       ],
     );
   }
 
-  Widget _buildTeamList(ColorScheme colorScheme) {
-    const members = [
-      _Member('Fadhil R.', '@fadhilr2', 'FR'),
-      _Member('I Putu Gede Deva Gundhala', '@theepar', 'DG'),
-      _Member('Adita R.', '@aditarhm', 'AR'),
-      _Member('Jeni', '@ejeniamutiara', 'JN'),
-      _Member('Abdurrahman Saleh', '@JustAHermit', 'AS'),
-    ];
+  Widget _buildQuickActionCards(BuildContext context, ColorScheme colorScheme) {
+    return Row(
+      children: [
+        Expanded(
+          child: _buildActionTile(
+            colorScheme,
+            title: 'Katalog',
+            desc: 'Daftar talent',
+            icon: Icons.search_rounded,
+            onTap: onExploreTap,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: _buildActionTile(
+            colorScheme,
+            title: 'Form Order',
+            desc: 'Checkout jasa',
+            icon: Icons.receipt_long_rounded,
+            onTap: onOrderTap,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: _buildActionTile(
+            colorScheme,
+            title: 'Tambah Jasa',
+            desc: 'Daftar talent',
+            icon: Icons.add_circle_outline_rounded,
+            onTap: onAddTap,
+          ),
+        ),
+      ],
+    );
+  }
 
-    return Container(
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: colorScheme.outlineVariant.withValues(alpha: 0.6),
+  Widget _buildActionTile(
+    ColorScheme colorScheme, {
+    required String title,
+    required String desc,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: colorScheme.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+        side: BorderSide(
+          color: colorScheme.outlineVariant.withValues(alpha: 0.5),
         ),
       ),
-      child: ListView.separated(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: members.length,
-        separatorBuilder: (_, _) => Divider(
-          height: 1,
-          indent: 64,
-          color: colorScheme.outlineVariant.withValues(alpha: 0.35),
-        ),
-        itemBuilder: (context, index) {
-          final m = members[index];
-          return ListTile(
-            dense: true,
-            visualDensity: const VisualDensity(vertical: -1),
-            leading: CircleAvatar(
-              radius: 17,
-              backgroundColor: colorScheme.primaryContainer,
-              child: Text(
-                m.initials,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+          child: Column(
+            children: [
+              Icon(icon, size: 22, color: colorScheme.primary),
+              const SizedBox(height: 6),
+              Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                desc,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 11.5,
-                  fontWeight: FontWeight.bold,
-                  color: colorScheme.primary,
-                ),
-              ),
-            ),
-            title: Text(
-              m.name,
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 13,
-              ),
-            ),
-            trailing: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              decoration: BoxDecoration(
-                color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: Text(
-                m.github,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontFamily: 'monospace',
+                  fontSize: 10,
                   color: colorScheme.onSurfaceVariant,
                 ),
               ),
-            ),
-          );
-        },
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  Widget _buildModuleStatusList(ColorScheme colorScheme) {
-    const modules = [
-      _ModuleStatus(
-        name: 'Beranda & Informasi Proyek',
-        page: 'beranda_page.dart',
-        isReady: true,
-      ),
-      _ModuleStatus(
-        name: 'Formulir Pemesanan & Kalkulasi Biaya',
-        page: 'order_page.dart',
-        isReady: true,
-      ),
-      _ModuleStatus(
-        name: 'Katalog & Pencarian Talent',
-        page: 'katalog_page.dart',
-        isReady: false,
-      ),
-      _ModuleStatus(
-        name: 'Detail Talent & Pilihan Paket',
-        page: 'detail_jasa_page.dart',
-        isReady: false,
-      ),
-      _ModuleStatus(
-        name: 'Pendaftaran Jasa Baru',
-        page: 'tambah_jasa_page.dart',
-        isReady: false,
-      ),
-    ];
+  Widget _buildTalentHeader(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text(
+          'Talent Unggulan',
+          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+        ),
+        TextButton(
+          onPressed: onExploreTap,
+          style: TextButton.styleFrom(
+            visualDensity: VisualDensity.compact,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+          ),
+          child: const Text('Lihat Semua', style: TextStyle(fontSize: 12)),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTalentList(BuildContext context, ColorScheme colorScheme) {
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: daftarTalent.length,
+      separatorBuilder: (_, _) => const SizedBox(height: 10),
+      itemBuilder: (context, index) {
+        final talent = daftarTalent[index];
+        return _TalentCard(talent: talent);
+      },
+    );
+  }
+}
+
+class _TalentCard extends StatelessWidget {
+  final Talent talent;
+
+  const _TalentCard({required this.talent});
+
+  String _formatRupiah(int nominal) {
+    final str = nominal.toString();
+    final buffer = StringBuffer();
+    for (int i = 0; i < str.length; i++) {
+      if (i > 0 && (str.length - i) % 3 == 0) {
+        buffer.write('.');
+      }
+      buffer.write(str[i]);
+    }
+    return 'Rp $buffer';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: colorScheme.outlineVariant.withValues(alpha: 0.6),
+          color: colorScheme.outlineVariant.withValues(alpha: 0.5),
         ),
       ),
-      child: ListView.separated(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: modules.length,
-        separatorBuilder: (_, _) => Divider(
-          height: 1,
-          indent: 52,
-          color: colorScheme.outlineVariant.withValues(alpha: 0.35),
-        ),
-        itemBuilder: (context, index) {
-          final mod = modules[index];
-          return ListTile(
-            dense: true,
-            visualDensity: const VisualDensity(vertical: -1),
-            leading: Icon(
-              mod.isReady ? Icons.check_circle_rounded : Icons.pending_outlined,
-              size: 20,
-              color: mod.isReady ? Colors.green : Colors.orange,
-            ),
-            title: Text(
-              mod.name,
-              style: const TextStyle(
-                fontSize: 12.5,
-                fontWeight: FontWeight.w600,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 18,
+                backgroundColor: colorScheme.primaryContainer,
+                child: Text(
+                  talent.nama.substring(0, 1),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: colorScheme.primary,
+                  ),
+                ),
               ),
-            ),
-            subtitle: Text(
-              mod.page,
-              style: TextStyle(
-                fontSize: 11,
-                fontFamily: 'monospace',
-                color: colorScheme.onSurfaceVariant,
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      talent.nama,
+                      style: const TextStyle(
+                        fontSize: 13.5,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      talent.bidang,
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            trailing: Text(
-              mod.isReady ? 'Siap' : 'Progres',
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: mod.isReady ? Colors.green : Colors.orange,
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.amber.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.star_rounded, size: 14, color: Colors.amber),
+                    const SizedBox(width: 2),
+                    Text(
+                      talent.rating.toString(),
+                      style: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
               ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            talent.deskripsi,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 11.5,
+              height: 1.35,
+              color: colorScheme.onSurfaceVariant,
             ),
-          );
-        },
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Mulai dari',
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  Text(
+                    _formatRupiah(talent.hargaMulai),
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.primary,
+                    ),
+                  ),
+                ],
+              ),
+              const Spacer(),
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => DetailJasaPage(talent: talent),
+                    ),
+                  );
+                },
+                style: OutlinedButton.styleFrom(
+                  visualDensity: VisualDensity.compact,
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                ),
+                child: const Text('Detail', style: TextStyle(fontSize: 11.5)),
+              ),
+              const SizedBox(width: 6),
+              FilledButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => OrderPage(talent: talent),
+                    ),
+                  );
+                },
+                style: FilledButton.styleFrom(
+                  visualDensity: VisualDensity.compact,
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                ),
+                child: const Text('Pesan', style: TextStyle(fontSize: 11.5)),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
 }
 
-class _ActionItem {
-  final String title;
-  final String subtitle;
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _ActionItem({
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-    required this.onTap,
-  });
-}
-
-class _Member {
+class _TeamMember {
   final String name;
   final String github;
   final String initials;
 
-  const _Member(this.name, this.github, this.initials);
-}
-
-class _ModuleStatus {
-  final String name;
-  final String page;
-  final bool isReady;
-
-  const _ModuleStatus({
-    required this.name,
-    required this.page,
-    required this.isReady,
-  });
+  const _TeamMember(this.name, this.github, this.initials);
 }
