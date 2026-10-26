@@ -315,22 +315,27 @@ class _BerandaView extends StatelessWidget {
       children: [
         for (final cat in _categories)
           Expanded(
-            child: InkWell(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
               onTap: onExploreTap,
-              borderRadius: BorderRadius.circular(20),
               child: Column(
                 children: [
-                  Container(
-                    width: 62,
-                    height: 62,
-                    decoration: BoxDecoration(
-                      color: cat.accent.background,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Icon(
-                      cat.accent.icon,
-                      size: 28,
-                      color: cat.accent.foreground,
+                  Material(
+                    color: cat.accent.background,
+                    borderRadius: BorderRadius.circular(20),
+                    clipBehavior: Clip.antiAlias,
+                    child: InkWell(
+                      onTap: onExploreTap,
+                      hoverColor: Colors.transparent,
+                      child: SizedBox(
+                        width: 62,
+                        height: 62,
+                        child: Icon(
+                          cat.accent.icon,
+                          size: 28,
+                          color: cat.accent.foreground,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 8),
