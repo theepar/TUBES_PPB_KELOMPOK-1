@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'pages/beranda_page.dart';
-import 'pages/order_page.dart';
-import 'talent_data.dart';
 
 void main() {
   runApp(const SewaSkillApp());
