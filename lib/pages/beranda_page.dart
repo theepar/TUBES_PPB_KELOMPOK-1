@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../components/app_bottom_nav_bar.dart';
 import '../talent.dart';
 import '../talent_data.dart';
 import 'detail_jasa_page.dart';
 import 'katalog_page.dart';
 import 'order_page.dart';
+import 'profile_page.dart';
 import 'tambah_jasa_page.dart';
 
 class BerandaPage extends StatefulWidget {
@@ -31,46 +33,21 @@ class _BerandaPageState extends State<BerandaPage> {
       _BerandaView(
         onExploreTap: () => _onItemTapped(1),
         onOrderTap: () => _onItemTapped(2),
-        onAddTap: () => _onItemTapped(3),
+        onProfileTap: () => _onItemTapped(3),
       ),
       const KatalogPage(),
       if (firstTalent != null)
         OrderPage(talent: firstTalent)
       else
         const Scaffold(body: Center(child: Text('Data talent kosong'))),
-      const TambahJasaPage(),
+      const ProfilePage(),
     ];
 
     return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: pages,
-      ),
-      bottomNavigationBar: NavigationBar(
+      body: IndexedStack(index: _selectedIndex, children: pages),
+      bottomNavigationBar: AppBottomNavBar(
         selectedIndex: _selectedIndex,
         onDestinationSelected: _onItemTapped,
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home_rounded),
-            label: 'Beranda',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.search_rounded),
-            selectedIcon: Icon(Icons.saved_search_rounded),
-            label: 'Katalog',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.shopping_bag_outlined),
-            selectedIcon: Icon(Icons.shopping_bag_rounded),
-            label: 'Order',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.add_circle_outline_rounded),
-            selectedIcon: Icon(Icons.add_circle_rounded),
-            label: 'Tambah',
-          ),
-        ],
       ),
     );
   }
@@ -79,12 +56,12 @@ class _BerandaPageState extends State<BerandaPage> {
 class _BerandaView extends StatelessWidget {
   final VoidCallback onExploreTap;
   final VoidCallback onOrderTap;
-  final VoidCallback onAddTap;
+  final VoidCallback onProfileTap;
 
   const _BerandaView({
     required this.onExploreTap,
     required this.onOrderTap,
-    required this.onAddTap,
+    required this.onProfileTap,
   });
 
   void _showProjectModal(BuildContext context) {
@@ -140,7 +117,10 @@ class _BerandaView extends StatelessWidget {
                 style: TextStyle(fontSize: 13, height: 1.5),
               ),
               const SizedBox(height: 16),
-              _buildDetailItem('Mata Kuliah', 'Pemrograman Perangkat Bergerak (PPB)'),
+              _buildDetailItem(
+                'Mata Kuliah',
+                'Pemrograman Perangkat Bergerak (PPB)',
+              ),
               _buildDetailItem('Tugas', 'Tugas Besar I (UTS) - Kelompok 1'),
               _buildDetailItem('Tech Stack', 'Flutter, Dart, Material 3'),
               _buildDetailItem('Target OS', 'Android & iOS'),
@@ -172,11 +152,17 @@ class _BerandaView extends StatelessWidget {
               style: const TextStyle(fontSize: 12.5, color: Colors.grey),
             ),
           ),
-          const Text(': ', style: TextStyle(fontSize: 12.5, color: Colors.grey)),
+          const Text(
+            ': ',
+            style: TextStyle(fontSize: 12.5, color: Colors.grey),
+          ),
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600),
+              style: const TextStyle(
+                fontSize: 12.5,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
@@ -272,10 +258,8 @@ class _BerandaView extends StatelessWidget {
           const SizedBox(height: 10),
           Text(
             'Solusi Jasa Freelance Mikro',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: -0.3,
-                ),
+            style: Theme.of(context).textTheme.titleLarge
+                ?.copyWith(fontWeight: FontWeight.bold, letterSpacing: -0.3),
           ),
           const SizedBox(height: 4),
           Text(
@@ -304,11 +288,21 @@ class _BerandaView extends StatelessWidget {
   Widget _buildMetricsRow(ColorScheme colorScheme) {
     return Row(
       children: [
-        _buildMetricItem(colorScheme, '5', 'Anggota Tim', Icons.people_outline_rounded),
+        _buildMetricItem(
+          colorScheme,
+          '5',
+          'Anggota Tim',
+          Icons.people_outline_rounded,
+        ),
         const SizedBox(width: 8),
         _buildMetricItem(colorScheme, '4', 'Talent Siap', Icons.badge_outlined),
         const SizedBox(width: 8),
-        _buildMetricItem(colorScheme, 'M3', 'Material UI', Icons.palette_outlined),
+        _buildMetricItem(
+          colorScheme,
+          'M3',
+          'Material UI',
+          Icons.palette_outlined,
+        ),
       ],
     );
   }
@@ -335,10 +329,7 @@ class _BerandaView extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               value,
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
             ),
             Text(
               label,
@@ -462,7 +453,7 @@ class _BerandaView extends StatelessWidget {
           child: _buildActionTile(
             colorScheme,
             title: 'Katalog',
-            desc: 'Daftar talent',
+            desc: 'Cari jasa',
             icon: Icons.search_rounded,
             onTap: onExploreTap,
           ),
@@ -471,8 +462,8 @@ class _BerandaView extends StatelessWidget {
         Expanded(
           child: _buildActionTile(
             colorScheme,
-            title: 'Form Order',
-            desc: 'Checkout jasa',
+            title: 'Order',
+            desc: 'Checkout',
             icon: Icons.receipt_long_rounded,
             onTap: onOrderTap,
           ),
@@ -481,10 +472,25 @@ class _BerandaView extends StatelessWidget {
         Expanded(
           child: _buildActionTile(
             colorScheme,
-            title: 'Tambah Jasa',
-            desc: 'Daftar talent',
+            title: 'Tambah',
+            desc: 'Jasa baru',
             icon: Icons.add_circle_outline_rounded,
-            onTap: onAddTap,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const TambahJasaPage()),
+              );
+            },
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: _buildActionTile(
+            colorScheme,
+            title: 'Profil',
+            desc: 'Akun tim',
+            icon: Icons.person_outline_rounded,
+            onTap: onProfileTap,
           ),
         ),
       ],
@@ -519,7 +525,10 @@ class _BerandaView extends StatelessWidget {
                 title,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               Text(
                 desc,
@@ -648,7 +657,11 @@ class _TalentCard extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.star_rounded, size: 14, color: Colors.amber),
+                    const Icon(
+                      Icons.star_rounded,
+                      size: 14,
+                      color: Colors.amber,
+                    ),
                     const SizedBox(width: 2),
                     Text(
                       talent.rating.toString(),
