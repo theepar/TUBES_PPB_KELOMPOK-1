@@ -6,8 +6,6 @@ import '../talent_data.dart';
 import 'detail_jasa_page.dart';
 import 'katalog_page.dart';
 import 'order_page.dart';
-import 'profile_page.dart';
-import 'tambah_jasa_page.dart';
 
 class BerandaPage extends StatefulWidget {
   const BerandaPage({super.key});
@@ -33,18 +31,19 @@ class _BerandaPageState extends State<BerandaPage> {
       _BerandaView(
         onExploreTap: () => _onItemTapped(1),
         onOrderTap: () => _onItemTapped(2),
-        onProfileTap: () => _onItemTapped(3),
       ),
       const KatalogPage(),
       if (firstTalent != null)
         OrderPage(talent: firstTalent)
       else
         const Scaffold(body: Center(child: Text('Data talent kosong'))),
-      const ProfilePage(),
     ];
 
     return Scaffold(
-      body: IndexedStack(index: _selectedIndex, children: pages),
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: pages,
+      ),
       bottomNavigationBar: AppBottomNavBar(
         selectedIndex: _selectedIndex,
         onDestinationSelected: _onItemTapped,
@@ -56,119 +55,11 @@ class _BerandaPageState extends State<BerandaPage> {
 class _BerandaView extends StatelessWidget {
   final VoidCallback onExploreTap;
   final VoidCallback onOrderTap;
-  final VoidCallback onProfileTap;
 
   const _BerandaView({
     required this.onExploreTap,
     required this.onOrderTap,
-    required this.onProfileTap,
   });
-
-  void _showProjectModal(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (ctx) {
-        final colorScheme = Theme.of(ctx).colorScheme;
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 36,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: colorScheme.outlineVariant,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: colorScheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Icon(
-                      Icons.info_outline_rounded,
-                      color: colorScheme.primary,
-                      size: 20,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  const Text(
-                    'Informasi Proyek',
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'SewaSkill Mobile adalah aplikasi pemesanan jasa freelance mikro untuk memenuhi penugasan Tugas Besar I (UTS) mata kuliah Pemrograman Perangkat Bergerak.',
-                style: TextStyle(fontSize: 13, height: 1.5),
-              ),
-              const SizedBox(height: 16),
-              _buildDetailItem(
-                'Mata Kuliah',
-                'Pemrograman Perangkat Bergerak (PPB)',
-              ),
-              _buildDetailItem('Tugas', 'Tugas Besar I (UTS) - Kelompok 1'),
-              _buildDetailItem('Tech Stack', 'Flutter, Dart, Material 3'),
-              _buildDetailItem('Target OS', 'Android & iOS'),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  onPressed: () => Navigator.pop(ctx),
-                  child: const Text('Tutup'),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  static Widget _buildDetailItem(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 110,
-            child: Text(
-              label,
-              style: const TextStyle(fontSize: 12.5, color: Colors.grey),
-            ),
-          ),
-          const Text(
-            ': ',
-            style: TextStyle(fontSize: 12.5, color: Colors.grey),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(
-                fontSize: 12.5,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -177,28 +68,49 @@ class _BerandaView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 16,
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        title: Row(
           children: [
-            const Text(
-              'SewaSkill',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            Text(
-              'Tugas Besar PPB • Kelompok 1',
-              style: TextStyle(
-                fontSize: 11.5,
-                fontWeight: FontWeight.normal,
-                color: colorScheme.onSurfaceVariant,
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: colorScheme.primaryContainer,
+                borderRadius: BorderRadius.circular(10),
               ),
+              child: Icon(
+                Icons.bolt_rounded,
+                size: 20,
+                color: colorScheme.primary,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'SewaSkill',
+                  style: TextStyle(fontSize: 17.5, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  'Jasa Freelance Digital Mikro',
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
         actions: [
           IconButton(
-            onPressed: () => _showProjectModal(context),
-            icon: const Icon(Icons.info_outline_rounded),
-            tooltip: 'Info Proyek',
+            onPressed: () {},
+            icon: const Icon(Icons.notifications_none_rounded),
+            tooltip: 'Notifikasi',
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.chat_bubble_outline_rounded),
+            tooltip: 'Pesan',
           ),
           const SizedBox(width: 8),
         ],
@@ -206,15 +118,15 @@ class _BerandaView extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         children: [
-          _buildHeroBanner(context, colorScheme),
+          _buildSearchBox(context, colorScheme),
           const SizedBox(height: 16),
-          _buildMetricsRow(colorScheme),
+          _buildPromoBanner(context, colorScheme),
           const SizedBox(height: 20),
-          _buildTeamSection(colorScheme),
+          _buildCategorySection(context, colorScheme),
           const SizedBox(height: 20),
-          _buildQuickActionCards(context, colorScheme),
+          _buildGuaranteesRow(colorScheme),
           const SizedBox(height: 24),
-          _buildTalentHeader(context),
+          _buildTalentSectionHeader(context),
           const SizedBox(height: 12),
           _buildTalentList(context, colorScheme),
         ],
@@ -222,7 +134,46 @@ class _BerandaView extends StatelessWidget {
     );
   }
 
-  Widget _buildHeroBanner(BuildContext context, ColorScheme colorScheme) {
+  Widget _buildSearchBox(BuildContext context, ColorScheme colorScheme) {
+    return Material(
+      color: colorScheme.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+        side: BorderSide(
+          color: colorScheme.outlineVariant.withValues(alpha: 0.6),
+        ),
+      ),
+      child: InkWell(
+        onTap: onExploreTap,
+        borderRadius: BorderRadius.circular(14),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          child: Row(
+            children: [
+              Icon(Icons.search_rounded, color: colorScheme.primary, size: 22),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  'Cari editor video, desainer, tutor koding...',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+              Icon(
+                Icons.tune_rounded,
+                size: 20,
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPromoBanner(BuildContext context, ColorScheme colorScheme) {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
@@ -234,7 +185,7 @@ class _BerandaView extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -246,10 +197,10 @@ class _BerandaView extends StatelessWidget {
               borderRadius: BorderRadius.circular(6),
             ),
             child: const Text(
-              'TUGAS BESAR I',
+              'PROMO SPESIAL',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 10.5,
+                fontSize: 10,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 0.5,
               ),
@@ -257,24 +208,26 @@ class _BerandaView extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            'Solusi Jasa Freelance Mikro',
-            style: Theme.of(context).textTheme.titleLarge
-                ?.copyWith(fontWeight: FontWeight.bold, letterSpacing: -0.3),
+            'Solusi Kreatif Tanpa Ribet',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: -0.3,
+                ),
           ),
           const SizedBox(height: 4),
           Text(
-            'Cari keahlian edit video, desain, koding, dan kepenulisan langsung dari aplikasi.',
+            'Pesan jasa mikro berkualitas mulai dari Rp 25.000 langsung ke talent terpercaya.',
             style: TextStyle(
               fontSize: 12.5,
               color: colorScheme.onPrimaryContainer,
               height: 1.4,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 14),
           FilledButton.icon(
             onPressed: onExploreTap,
-            icon: const Icon(Icons.explore_rounded, size: 16),
-            label: const Text('Jelajahi Katalog'),
+            icon: const Icon(Icons.arrow_forward_rounded, size: 16),
+            label: const Text('Jelajahi Sekarang'),
             style: FilledButton.styleFrom(
               visualDensity: VisualDensity.compact,
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
@@ -285,273 +238,145 @@ class _BerandaView extends StatelessWidget {
     );
   }
 
-  Widget _buildMetricsRow(ColorScheme colorScheme) {
-    return Row(
-      children: [
-        _buildMetricItem(
-          colorScheme,
-          '5',
-          'Anggota Tim',
-          Icons.people_outline_rounded,
-        ),
-        const SizedBox(width: 8),
-        _buildMetricItem(colorScheme, '4', 'Talent Siap', Icons.badge_outlined),
-        const SizedBox(width: 8),
-        _buildMetricItem(
-          colorScheme,
-          'M3',
-          'Material UI',
-          Icons.palette_outlined,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMetricItem(
-    ColorScheme colorScheme,
-    String value,
-    String label,
-    IconData icon,
-  ) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-        decoration: BoxDecoration(
-          color: colorScheme.surface,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: colorScheme.outlineVariant.withValues(alpha: 0.5),
-          ),
-        ),
-        child: Column(
-          children: [
-            Icon(icon, size: 18, color: colorScheme.primary),
-            const SizedBox(height: 4),
-            Text(
-              value,
-              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-            ),
-            Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 10.5,
-                color: colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTeamSection(ColorScheme colorScheme) {
-    const team = [
-      _TeamMember('Fadhil R.', '@fadhilr2', 'FR'),
-      _TeamMember('I Putu Gede Deva G.', '@theepar', 'DG'),
-      _TeamMember('Adita R.', '@aditarhm', 'AR'),
-      _TeamMember('Jeni', '@ejeniamutiara', 'JN'),
-      _TeamMember('Abdurrahman S.', '@JustAHermit', 'AS'),
+  Widget _buildCategorySection(BuildContext context, ColorScheme colorScheme) {
+    final categories = [
+      _Category('Edit Video', Icons.movie_creation_outlined),
+      _Category('Desain Grafis', Icons.palette_outlined),
+      _Category('Tutor Koding', Icons.code_rounded),
+      _Category('Tulis Konten', Icons.edit_note_rounded),
     ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        const Text(
+          'Kategori Layanan',
+          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 12),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              'Tim Pengembang',
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              decoration: BoxDecoration(
-                color: colorScheme.secondaryContainer.withValues(alpha: 0.7),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                'Kelompok 1',
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: colorScheme.onSecondaryContainer,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
-        SizedBox(
-          height: 105,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: team.length,
-            separatorBuilder: (_, _) => const SizedBox(width: 8),
-            itemBuilder: (context, index) {
-              final m = team[index];
-              return Container(
-                width: 120,
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: colorScheme.surface,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(
-                    color: colorScheme.outlineVariant.withValues(alpha: 0.5),
-                  ),
-                ),
+          children: categories.map((cat) {
+            return Expanded(
+              child: GestureDetector(
+                onTap: onExploreTap,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CircleAvatar(
-                      radius: 16,
-                      backgroundColor: colorScheme.primaryContainer,
-                      child: Text(
-                        m.initials,
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                          color: colorScheme.primary,
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: colorScheme.surfaceContainerHighest.withValues(
+                          alpha: 0.5,
                         ),
+                        shape: BoxShape.circle,
                       ),
+                      child: Icon(cat.icon, color: colorScheme.primary, size: 22),
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      m.name,
+                      cat.title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    Text(
-                      m.github,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 9.5,
-                        fontFamily: 'monospace',
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ),
                   ],
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          }).toList(),
         ),
       ],
     );
   }
 
-  Widget _buildQuickActionCards(BuildContext context, ColorScheme colorScheme) {
-    return Row(
-      children: [
-        Expanded(
-          child: _buildActionTile(
-            colorScheme,
-            title: 'Katalog',
-            desc: 'Cari jasa',
-            icon: Icons.search_rounded,
-            onTap: onExploreTap,
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: _buildActionTile(
-            colorScheme,
-            title: 'Order',
-            desc: 'Checkout',
-            icon: Icons.receipt_long_rounded,
-            onTap: onOrderTap,
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: _buildActionTile(
-            colorScheme,
-            title: 'Tambah',
-            desc: 'Jasa baru',
-            icon: Icons.add_circle_outline_rounded,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const TambahJasaPage()),
-              );
-            },
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: _buildActionTile(
-            colorScheme,
-            title: 'Profil',
-            desc: 'Akun tim',
-            icon: Icons.person_outline_rounded,
-            onTap: onProfileTap,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildActionTile(
-    ColorScheme colorScheme, {
-    required String title,
-    required String desc,
-    required IconData icon,
-    required VoidCallback onTap,
-  }) {
-    return Material(
-      color: colorScheme.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-        side: BorderSide(
+  Widget _buildGuaranteesRow(ColorScheme colorScheme) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
           color: colorScheme.outlineVariant.withValues(alpha: 0.5),
         ),
       ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(14),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-          child: Column(
-            children: [
-              Icon(icon, size: 22, color: colorScheme.primary),
-              const SizedBox(height: 6),
-              Text(
-                title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                desc,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 10,
-                  color: colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
+      child: Row(
+        children: [
+          _buildGuaranteeItem(
+            colorScheme,
+            Icons.speed_rounded,
+            'Pengerjaan Cepat',
+            'Mulai 24 jam',
           ),
-        ),
+          _buildGuaranteeDivider(colorScheme),
+          _buildGuaranteeItem(
+            colorScheme,
+            Icons.verified_user_outlined,
+            'Aman & Bergaransi',
+            'Dana tertahan aman',
+          ),
+          _buildGuaranteeDivider(colorScheme),
+          _buildGuaranteeItem(
+            colorScheme,
+            Icons.star_outline_rounded,
+            'Talent Pilihan',
+            'Rating transparan',
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildTalentHeader(BuildContext context) {
+  Widget _buildGuaranteeItem(
+    ColorScheme colorScheme,
+    IconData icon,
+    String title,
+    String subtitle,
+  ) {
+    return Expanded(
+      child: Column(
+        children: [
+          Icon(icon, size: 20, color: colorScheme.primary),
+          const SizedBox(height: 4),
+          Text(
+            title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            subtitle,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 9.5,
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGuaranteeDivider(ColorScheme colorScheme) {
+    return Container(
+      width: 1,
+      height: 28,
+      color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+    );
+  }
+
+  Widget _buildTalentSectionHeader(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         const Text(
-          'Talent Unggulan',
+          'Talent Terlaris',
           style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
         ),
         TextButton(
@@ -602,7 +427,7 @@ class _TalentCard extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
@@ -616,7 +441,7 @@ class _TalentCard extends StatelessWidget {
           Row(
             children: [
               CircleAvatar(
-                radius: 18,
+                radius: 19,
                 backgroundColor: colorScheme.primaryContainer,
                 child: Text(
                   talent.nama.substring(0, 1),
@@ -649,7 +474,7 @@ class _TalentCard extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                 decoration: BoxDecoration(
                   color: Colors.amber.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(6),
@@ -657,16 +482,12 @@ class _TalentCard extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(
-                      Icons.star_rounded,
-                      size: 14,
-                      color: Colors.amber,
-                    ),
+                    const Icon(Icons.star_rounded, size: 14, color: Colors.amber),
                     const SizedBox(width: 2),
                     Text(
                       talent.rating.toString(),
                       style: const TextStyle(
-                        fontSize: 11,
+                        fontSize: 11.5,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -686,7 +507,7 @@ class _TalentCard extends StatelessWidget {
               color: colorScheme.onSurfaceVariant,
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
           Row(
             children: [
               Column(
@@ -702,7 +523,7 @@ class _TalentCard extends StatelessWidget {
                   Text(
                     _formatRupiah(talent.hargaMulai),
                     style: TextStyle(
-                      fontSize: 13,
+                      fontSize: 13.5,
                       fontWeight: FontWeight.bold,
                       color: colorScheme.primary,
                     ),
@@ -749,10 +570,9 @@ class _TalentCard extends StatelessWidget {
   }
 }
 
-class _TeamMember {
-  final String name;
-  final String github;
-  final String initials;
+class _Category {
+  final String title;
+  final IconData icon;
 
-  const _TeamMember(this.name, this.github, this.initials);
+  const _Category(this.title, this.icon);
 }

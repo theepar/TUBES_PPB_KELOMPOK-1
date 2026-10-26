@@ -31,11 +31,6 @@ class AppBottomNavBar extends StatelessWidget {
           selectedIcon: Icon(Icons.shopping_bag_rounded),
           label: 'Order',
         ),
-        NavigationDestination(
-          icon: Icon(Icons.person_outline_rounded),
-          selectedIcon: Icon(Icons.person_rounded),
-          label: 'Profile',
-        ),
       ],
     );
   }
