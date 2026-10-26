@@ -36,9 +36,9 @@ class _OrderPageState extends State<OrderPage> {
   }
 
   void _kirim() {
-  if (_formKey.currentState!.validate() == false) {
-    return; 
-  }
+    if (_formKey.currentState!.validate() == false) {
+      return; 
+    }
 
     _tampilkanPesan(
         'Pesanan ${widget.talent.nama} (Paket $_paket) berhasil dikirim. Total ${formatRupiah(_total)}.');
