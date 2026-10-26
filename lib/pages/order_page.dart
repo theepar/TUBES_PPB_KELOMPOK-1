@@ -18,7 +18,6 @@ class _OrderPageState extends State<OrderPage> {
   final _formKey = GlobalKey<FormState>();
   String _paket = 'Standard';
   String _metode = 'BCA';
-  bool _setuju = false;
 
   int get _harga => widget.talent.hargaPaket(_paket);
   int get _biayaLayanan => (_harga * 0.05).round();
@@ -40,10 +39,6 @@ class _OrderPageState extends State<OrderPage> {
   void _kirim() {
     if (!_formKey.currentState!.validate()) return;
 
-    if (!_setuju) {
-      _tampilkanPesan('Centang persetujuan untuk melanjutkan.');
-      return;
-    }
 
     _tampilkanPesan(
         'Pesanan ${widget.talent.nama} (Paket $_paket) berhasil dikirim. Total ${formatRupiah(_total)}.');
@@ -212,18 +207,6 @@ class _OrderPageState extends State<OrderPage> {
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(height: 16),
-                CheckboxListTile(
-                  value: _setuju,
-                  controlAffinity: ListTileControlAffinity.leading,
-                  title: const Text(
-                      'Saya menyetujui Syarat & Ketentuan layanan ini, termasuk kebijakan revisi dan refund *'),
-                  onChanged: (nilai) {
-                    setState(() {
-                      _setuju = nilai ?? false;
-                    });
-                  },
                 ),
                 const SizedBox(height: 16),
                 Text(
