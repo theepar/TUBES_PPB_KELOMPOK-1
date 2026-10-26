@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+
 import '../talent.dart';
+import '../utils/currency_formatter.dart';
 
 class OrderPage extends StatefulWidget {
   final Talent talent;
 
-  const OrderPage({super.key, required this.talent});
+  final VoidCallback? onKembali;
+
+  const OrderPage({super.key, required this.talent, this.onKembali});
 
   @override
   State<OrderPage> createState() => _OrderPageState();
@@ -16,7 +20,6 @@ class _OrderPageState extends State<OrderPage> {
   String _metode = 'BCA';
   bool _setuju = false;
 
-  // Perhitungan biaya. Harga paket dari Talent, sama dengan halaman Detail.
   int get _harga => widget.talent.hargaPaket(_paket);
   int get _biayaLayanan => (_harga * 0.05).round();
   int get _total => _harga + _biayaLayanan;
@@ -43,10 +46,9 @@ class _OrderPageState extends State<OrderPage> {
     }
 
     _tampilkanPesan(
-        'Pesanan ${widget.talent.nama} (Paket $_paket) berhasil dikirim. Total Rp $_total.');
+        'Pesanan ${widget.talent.nama} (Paket $_paket) berhasil dikirim. Total ${formatRupiah(_total)}.');
   }
 
-  // Satu baris rincian biaya: label di kiri, nilai di kanan
   Widget _baris(String label, String nilai, {bool tebal = false}) {
     final gaya = tebal ? const TextStyle(fontWeight: FontWeight.bold) : null;
 
@@ -73,8 +75,6 @@ class _OrderPageState extends State<OrderPage> {
         children: [
           Text('Konfirmasi & Pesan Jasa', style: tema.headlineSmall),
           const SizedBox(height: 16),
-
-          // ── Ringkasan pesanan ──
           Card(
             child: Padding(
               padding: const EdgeInsets.all(16),
@@ -100,10 +100,10 @@ class _OrderPageState extends State<OrderPage> {
                     ],
                   ),
                   const Divider(height: 24),
-                  _baris('Jasa Paket $_paket', 'Rp $_harga'),
-                  _baris('Biaya Layanan Platform (5%)', 'Rp $_biayaLayanan'),
+                  _baris('Jasa Paket $_paket', formatRupiah(_harga)),
+                  _baris('Biaya Layanan Platform (5%)', formatRupiah(_biayaLayanan)),
                   const Divider(),
-                  _baris('Total Pembayaran', 'Rp $_total', tebal: true),
+                  _baris('Total Pembayaran', formatRupiah(_total), tebal: true),
                   const SizedBox(height: 8),
                   const Text('Estimasi selesai: 2 hari kerja setelah brief diterima'),
                 ],
@@ -111,8 +111,6 @@ class _OrderPageState extends State<OrderPage> {
             ),
           ),
           const SizedBox(height: 24),
-
-          // ── Form ──
           Form(
             key: _formKey,
             child: Column(
@@ -156,7 +154,6 @@ class _OrderPageState extends State<OrderPage> {
                   ),
                   validator: _wajib,
                 ),
-
                 const SizedBox(height: 24),
                 Text('Detail Pesanan', style: tema.titleMedium),
                 const SizedBox(height: 8),
@@ -188,7 +185,6 @@ class _OrderPageState extends State<OrderPage> {
                   ),
                   validator: _wajib,
                 ),
-
                 const SizedBox(height: 24),
                 Text('Metode Pembayaran', style: tema.titleMedium),
                 RadioGroup<String>(
@@ -217,7 +213,6 @@ class _OrderPageState extends State<OrderPage> {
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 16),
                 CheckboxListTile(
                   value: _setuju,
@@ -230,10 +225,9 @@ class _OrderPageState extends State<OrderPage> {
                     });
                   },
                 ),
-
                 const SizedBox(height: 16),
                 Text(
-                  'Total yang akan dibayar: Rp $_total',
+                  'Total yang akan dibayar: ${formatRupiah(_total)}',
                   style: tema.titleMedium,
                   textAlign: TextAlign.center,
                 ),
@@ -244,9 +238,7 @@ class _OrderPageState extends State<OrderPage> {
                 ),
                 const SizedBox(height: 8),
                 TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
+                  onPressed: widget.onKembali ?? () => Navigator.pop(context),
                   child: const Text('Kembali ke Halaman Jasa'),
                 ),
               ],
