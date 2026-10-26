@@ -1,6 +1,6 @@
 # SewaSkill - Platform Freelance Jasa Digital (Mobile App)
 
-> Tugas Besar I (UTS) - Pemrograman Perangkat Bergerak  
+> Tugas Besar - Pemrograman Perangkat Bergerak  
 > Kelompok 1
 
 ---
