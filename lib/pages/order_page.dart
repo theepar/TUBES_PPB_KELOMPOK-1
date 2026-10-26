@@ -6,9 +6,8 @@ import '../utils/currency_formatter.dart';
 class OrderPage extends StatefulWidget {
   final Talent talent;
 
-  final VoidCallback? onKembali;
 
-  const OrderPage({super.key, required this.talent, this.onKembali});
+  const OrderPage({super.key, required this.talent});
 
   @override
   State<OrderPage> createState() => _OrderPageState();
@@ -37,8 +36,9 @@ class _OrderPageState extends State<OrderPage> {
   }
 
   void _kirim() {
-    if (!_formKey.currentState!.validate()) return;
-
+  if (_formKey.currentState!.validate() == false) {
+    return; 
+  }
 
     _tampilkanPesan(
         'Pesanan ${widget.talent.nama} (Paket $_paket) berhasil dikirim. Total ${formatRupiah(_total)}.');
@@ -221,7 +221,7 @@ class _OrderPageState extends State<OrderPage> {
                 ),
                 const SizedBox(height: 8),
                 TextButton(
-                  onPressed: widget.onKembali ?? () => Navigator.pop(context),
+                  onPressed: () => Navigator.pop(context),
                   child: const Text('Kembali ke Halaman Jasa'),
                 ),
               ],
