@@ -40,7 +40,7 @@ class _BerandaPageState extends State<BerandaPage> {
       const _BerandaView(),
       const KatalogPage(),
       if (firstTalent != null)
-        OrderPage(talent: firstTalent, onKembali: () => _onItemTapped(0))
+        OrderPage(talent: firstTalent)
       else
         const Scaffold(body: Center(child: Text('Data talent kosong'))),
     ];

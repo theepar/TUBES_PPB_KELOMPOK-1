@@ -6,9 +6,7 @@ import '../utils/currency_formatter.dart';
 class OrderPage extends StatefulWidget {
   final Talent talent;
 
-  final VoidCallback? onKembali;
-
-  const OrderPage({super.key, required this.talent, this.onKembali});
+  const OrderPage({super.key, required this.talent});
 
   @override
   State<OrderPage> createState() => _OrderPageState();
@@ -18,7 +16,6 @@ class _OrderPageState extends State<OrderPage> {
   final _formKey = GlobalKey<FormState>();
   String _paket = 'Standard';
   String _metode = 'BCA';
-  bool _setuju = false;
 
   int get _harga => widget.talent.hargaPaket(_paket);
   int get _biayaLayanan => (_harga * 0.05).round();
@@ -32,21 +29,17 @@ class _OrderPageState extends State<OrderPage> {
   }
 
   void _tampilkanPesan(String pesan) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(pesan)),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(pesan)));
   }
 
   void _kirim() {
-    if (!_formKey.currentState!.validate()) return;
-
-    if (!_setuju) {
-      _tampilkanPesan('Centang persetujuan untuk melanjutkan.');
+    if (_formKey.currentState!.validate() == false) {
       return;
     }
 
     _tampilkanPesan(
-        'Pesanan ${widget.talent.nama} (Paket $_paket) berhasil dikirim. Total ${formatRupiah(_total)}.');
+      'Pesanan ${widget.talent.nama} (Paket $_paket) berhasil dikirim. Total ${formatRupiah(_total)}.',
+    );
   }
 
   Widget _baris(String label, String nilai, {bool tebal = false}) {
@@ -101,11 +94,16 @@ class _OrderPageState extends State<OrderPage> {
                   ),
                   const Divider(height: 24),
                   _baris('Jasa Paket $_paket', formatRupiah(_harga)),
-                  _baris('Biaya Layanan Platform (5%)', formatRupiah(_biayaLayanan)),
+                  _baris(
+                    'Biaya Layanan Platform (5%)',
+                    formatRupiah(_biayaLayanan),
+                  ),
                   const Divider(),
                   _baris('Total Pembayaran', formatRupiah(_total), tebal: true),
                   const SizedBox(height: 8),
-                  const Text('Estimasi selesai: 2 hari kerja setelah brief diterima'),
+                  const Text(
+                    'Estimasi selesai: 2 hari kerja setelah brief diterima',
+                  ),
                 ],
               ),
             ),
@@ -162,9 +160,18 @@ class _OrderPageState extends State<OrderPage> {
                   value: _paket,
                   isExpanded: true,
                   items: const [
-                    DropdownMenuItem(value: 'Basic', child: Text('Paket Basic')),
-                    DropdownMenuItem(value: 'Standard', child: Text('Paket Standard')),
-                    DropdownMenuItem(value: 'Premium', child: Text('Paket Premium')),
+                    DropdownMenuItem(
+                      value: 'Basic',
+                      child: Text('Paket Basic'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Standard',
+                      child: Text('Paket Standard'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Premium',
+                      child: Text('Paket Premium'),
+                    ),
                   ],
                   onChanged: (nilai) {
                     if (nilai != null) {
@@ -179,7 +186,8 @@ class _OrderPageState extends State<OrderPage> {
                   maxLines: 5,
                   decoration: const InputDecoration(
                     labelText: 'Brief Proyek / Catatan untuk Talent *',
-                    hintText: 'Jelaskan tema, gaya yang diinginkan, dan referensi.',
+                    hintText:
+                        'Jelaskan tema, gaya yang diinginkan, dan referensi.',
                     alignLabelWithHint: true,
                     border: OutlineInputBorder(),
                   ),
@@ -206,24 +214,9 @@ class _OrderPageState extends State<OrderPage> {
                         value: 'GoPay',
                         title: Text('GoPay'),
                       ),
-                      RadioListTile<String>(
-                        value: 'DANA',
-                        title: Text('DANA'),
-                      ),
+                      RadioListTile<String>(value: 'DANA', title: Text('DANA')),
                     ],
                   ),
-                ),
-                const SizedBox(height: 16),
-                CheckboxListTile(
-                  value: _setuju,
-                  controlAffinity: ListTileControlAffinity.leading,
-                  title: const Text(
-                      'Saya menyetujui Syarat & Ketentuan layanan ini, termasuk kebijakan revisi dan refund *'),
-                  onChanged: (nilai) {
-                    setState(() {
-                      _setuju = nilai ?? false;
-                    });
-                  },
                 ),
                 const SizedBox(height: 16),
                 Text(
@@ -238,7 +231,7 @@ class _OrderPageState extends State<OrderPage> {
                 ),
                 const SizedBox(height: 8),
                 TextButton(
-                  onPressed: widget.onKembali ?? () => Navigator.pop(context),
+                  onPressed: () => Navigator.pop(context),
                   child: const Text('Kembali ke Halaman Jasa'),
                 ),
               ],
