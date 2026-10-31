@@ -5,8 +5,9 @@ import '../utils/currency_formatter.dart';
 
 class OrderPage extends StatefulWidget {
   final Talent talent;
+  final VoidCallback? onKembali;
 
-  const OrderPage({super.key, required this.talent});
+  const OrderPage({super.key, required this.talent, this.onKembali});
 
   @override
   State<OrderPage> createState() => _OrderPageState();
@@ -231,7 +232,7 @@ class _OrderPageState extends State<OrderPage> {
                 ),
                 const SizedBox(height: 8),
                 TextButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: widget.onKembali ?? () => Navigator.pop(context),
                   child: const Text('Kembali ke Halaman Jasa'),
                 ),
               ],
