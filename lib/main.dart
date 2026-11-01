@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'config/env.dart';
 import 'pages/beranda_page.dart';
+import 'services/app_session.dart';
 import 'utils/app_colors.dart';
 
 Future<void> main() async {
@@ -13,6 +14,7 @@ Future<void> main() async {
       url: Env.supabaseUrl,
       publishableKey: Env.supabaseAnonKey,
     );
+    await AppSession.instance.muatProfil();
   } else {
     debugPrint(
       'Supabase belum dikonfigurasi. Jalankan dengan --dart-define-from-file=env.json',

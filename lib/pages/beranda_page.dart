@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../components/avatar_user.dart';
 import '../components/navbar.dart';
 import '../components/talent_card.dart';
-import '../pengguna.dart';
+import '../services/app_session.dart';
 import '../talent.dart';
 import '../talent_data.dart';
 import '../utils/app_colors.dart';
@@ -92,6 +93,22 @@ class _BerandaViewState extends State<_BerandaView> {
   int _heroTab = 0; // 0 = Harga, 1 = Rating
   int _urutTab = 0; // 0 = Terlaris, 1 = Termurah, 2 = Rating
 
+  @override
+  void initState() {
+    super.initState();
+    AppSession.instance.addListener(_onSessionChanged);
+  }
+
+  @override
+  void dispose() {
+    AppSession.instance.removeListener(_onSessionChanged);
+    super.dispose();
+  }
+
+  void _onSessionChanged() {
+    if (mounted) setState(() {});
+  }
+
   List<Talent> get _terfilter {
     final kata = _kategori[_kategoriIndex].kata;
     return daftarTalent
@@ -130,6 +147,11 @@ class _BerandaViewState extends State<_BerandaView> {
   Widget build(BuildContext context) {
     final talents = _terurut;
     final terpilih = _kategori[_kategoriIndex];
+    final profil = AppSession.instance.profile;
+    final nama = (profil?.nama.isNotEmpty ?? false) ? profil!.nama : 'Tamu';
+    final lokasi = (profil?.lokasi.isNotEmpty ?? false)
+        ? profil!.lokasi
+        : 'Lokasi belum diisi';
 
     return SafeArea(
       child: ListView(
@@ -140,12 +162,18 @@ class _BerandaViewState extends State<_BerandaView> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              AvatarUser(
+                nama: nama,
+                avatarPath: profil?.avatarPath,
+                radius: 24,
+              ),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Hi, ${penggunaLogin.nama}',
+                      'Hi, $nama',
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -168,7 +196,7 @@ class _BerandaViewState extends State<_BerandaView> {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          penggunaLogin.lokasi,
+                          lokasi,
                           style: const TextStyle(
                             fontSize: 12.5,
                             fontWeight: FontWeight.w500,
