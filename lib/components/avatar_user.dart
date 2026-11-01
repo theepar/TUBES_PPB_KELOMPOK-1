@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../config/env.dart';
+import '../services/app_session.dart';
 import '../utils/app_colors.dart';
 
 class AvatarUser extends StatelessWidget {
@@ -42,9 +43,10 @@ class AvatarUser extends StatelessWidget {
     if (path == null || path.isEmpty || !Env.terisi) return _huruf();
 
     final url = Supabase.instance.client.storage.from('avatar').getPublicUrl(path);
+    final versi = AppSession.instance.avatarVersi;
     return ClipOval(
       child: Image.network(
-        url,
+        versi > 0 ? '$url?v=$versi' : url,
         width: radius * 2,
         height: radius * 2,
         fit: BoxFit.cover,

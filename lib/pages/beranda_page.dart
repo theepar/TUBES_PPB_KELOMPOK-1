@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../components/avatar_user.dart';
+import '../components/halaman_placeholder.dart';
 import '../components/navbar.dart';
 import '../components/talent_card.dart';
 import '../pengguna.dart';
@@ -12,6 +13,7 @@ import '../utils/currency_formatter.dart';
 import 'detail_jasa_page.dart';
 import 'katalog_page.dart';
 import 'order_page.dart';
+import 'profil_page.dart';
 import 'tambah_jasa_page.dart';
 
 class BerandaPage extends StatefulWidget {
@@ -23,6 +25,31 @@ class BerandaPage extends StatefulWidget {
 
 class _BerandaPageState extends State<BerandaPage> {
   int _selectedIndex = 0;
+  bool _modeAdminTerakhir = AppSession.instance.isAdminMode;
+
+  @override
+  void initState() {
+    super.initState();
+    AppSession.instance.addListener(_onSessionChanged);
+  }
+
+  @override
+  void dispose() {
+    AppSession.instance.removeListener(_onSessionChanged);
+    super.dispose();
+  }
+
+  // Saat Mode Admin dinyalakan atau dimatikan, set tab ke yang pertama.
+  void _onSessionChanged() {
+    if (!mounted) return;
+    final admin = AppSession.instance.isAdminMode;
+    setState(() {
+      if (admin != _modeAdminTerakhir) {
+        _modeAdminTerakhir = admin;
+        _selectedIndex = 0;
+      }
+    });
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -30,36 +57,55 @@ class _BerandaPageState extends State<BerandaPage> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final firstTalent = daftarTalent.isNotEmpty ? daftarTalent.first : null;
+  // Urutan harus sama dengan Navbar.tujuanBiasa dan Navbar.tujuanAdmin.
+  List<Widget> _halaman(bool modeAdmin) {
+    if (modeAdmin) {
+      return const [
+        HalamanPlaceholder(judul: 'Manajemen Pembelian'),
+        HalamanPlaceholder(judul: 'Manajemen Akun'),
+        ProfilPage(),
+      ];
+    }
 
-    final pages = [
+    final firstTalent = daftarTalent.isNotEmpty ? daftarTalent.first : null;
+    return [
       const _BerandaView(),
       const KatalogPage(),
       if (firstTalent != null)
         OrderPage(talent: firstTalent, onKembali: () => _onItemTapped(0))
       else
         const Scaffold(body: Center(child: Text('Data talent kosong'))),
+      const HalamanPlaceholder(judul: 'Favorit'),
+      const ProfilPage(),
     ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final session = AppSession.instance;
+    final modeAdmin = session.isAdminMode;
+    final pages = _halaman(modeAdmin);
+    final index = _selectedIndex < pages.length ? _selectedIndex : 0;
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: IndexedStack(index: _selectedIndex, children: pages),
+      body: IndexedStack(index: index, children: pages),
       bottomNavigationBar: Navbar(
-        selectedIndex: _selectedIndex,
+        selectedIndex: index,
         onDestinationSelected: _onItemTapped,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const TambahJasaPage()),
-        ),
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
-        tooltip: 'Tambah Jasa',
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: (!modeAdmin && session.isPenyedia && index == 0)
+          ? FloatingActionButton(
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const TambahJasaPage()),
+              ),
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+              tooltip: 'Tambah Jasa',
+              child: const Icon(Icons.add),
+            )
+          : null,
     );
   }
 }

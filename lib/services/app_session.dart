@@ -12,6 +12,11 @@ class AppSession extends ChangeNotifier {
   Pengguna? _profile;
   bool _isAdminMode = false;
   bool _akunDiblokir = false;
+  int _avatarVersi = 0;
+
+  /// Naik setiap kali user mengganti foto profilnya. Dipakai `AvatarUser`
+  /// untuk menghindari gambar lama yang tertahan di cache.
+  int get avatarVersi => _avatarVersi;
 
   Pengguna? get profile => _profile;
   bool get akunDiblokir => _akunDiblokir;
@@ -31,8 +36,9 @@ class AppSession extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> muatProfil() async {
+  Future<void> muatProfil({bool avatarBerubah = false}) async {
     if (!Env.terisi) return;
+    if (avatarBerubah) _avatarVersi++;
 
     final db = Supabase.instance.client;
     final user = db.auth.currentUser;
