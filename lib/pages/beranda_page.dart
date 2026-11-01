@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../components/avatar_user.dart';
 import '../components/navbar.dart';
 import '../components/talent_card.dart';
+import '../pengguna.dart';
 import '../services/app_session.dart';
 import '../talent.dart';
 import '../talent_data.dart';
@@ -90,8 +91,8 @@ class _BerandaView extends StatefulWidget {
 
 class _BerandaViewState extends State<_BerandaView> {
   int _kategoriIndex = 0;
-  int _heroTab = 0; // 0 = Harga, 1 = Rating
-  int _urutTab = 0; // 0 = Terlaris, 1 = Termurah, 2 = Rating
+  int _heroTab = 0;
+  int _urutTab = 0;
 
   @override
   void initState() {
@@ -143,29 +144,121 @@ class _BerandaViewState extends State<_BerandaView> {
     );
   }
 
+  void _bukaProfil(BuildContext context, Pengguna profil) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 24, 20, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AvatarUser(
+                  nama: profil.nama,
+                  avatarPath: profil.avatarPath,
+                  radius: 32,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  profil.nama,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.ink,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  '${profil.role.toUpperCase()} · ${profil.lokasi}',
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: AppColors.inkSoft,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: AppColors.background,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.track),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Saldo Akun',
+                        style: TextStyle(fontSize: 13, color: AppColors.inkSoft),
+                      ),
+                      Text(
+                        formatRupiah(profil.saldo),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () async {
+                      Navigator.pop(ctx);
+                      await AppSession.instance.keluar();
+                    },
+                    icon: const Icon(Icons.logout, size: 18, color: Colors.red),
+                    label: const Text(
+                      'Keluar / Logout',
+                      style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: Colors.red),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final talents = _terurut;
     final terpilih = _kategori[_kategoriIndex];
-    final profil = AppSession.instance.profile;
-    final nama = (profil?.nama.isNotEmpty ?? false) ? profil!.nama : 'Tamu';
-    final lokasi = (profil?.lokasi.isNotEmpty ?? false)
-        ? profil!.lokasi
-        : 'Lokasi belum diisi';
+    final profil = AppSession.instance.profile ?? penggunaLogin;
+    final nama = profil.nama.isNotEmpty ? profil.nama : 'Deva';
+    final lokasi = profil.lokasi.isNotEmpty ? profil.lokasi : 'Bandung, Jawa Barat';
 
     return SafeArea(
       child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Header Sapaan & Lokasi
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AvatarUser(
-                nama: nama,
-                avatarPath: profil?.avatarPath,
-                radius: 24,
+              GestureDetector(
+                onTap: () => _bukaProfil(context, profil),
+                child: AvatarUser(
+                  nama: nama,
+                  avatarPath: profil.avatarPath,
+                  radius: 24,
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -187,7 +280,6 @@ class _BerandaViewState extends State<_BerandaView> {
                     ),
                     const SizedBox(height: 6),
                     Row(
-                      mainAxisSize: MainAxisSize.min,
                       children: [
                         const Icon(
                           Icons.location_on,
@@ -195,12 +287,16 @@ class _BerandaViewState extends State<_BerandaView> {
                           color: AppColors.primary,
                         ),
                         const SizedBox(width: 4),
-                        Text(
-                          lokasi,
-                          style: const TextStyle(
-                            fontSize: 12.5,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.inkSoft,
+                        Expanded(
+                          child: Text(
+                            lokasi,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.inkSoft,
+                            ),
                           ),
                         ),
                       ],
@@ -220,7 +316,6 @@ class _BerandaViewState extends State<_BerandaView> {
           ),
           const SizedBox(height: 16),
 
-          // Hero Ringkasan Card
           Card(
             elevation: 1,
             shape: RoundedRectangleBorder(
@@ -283,11 +378,9 @@ class _BerandaViewState extends State<_BerandaView> {
           ),
           const SizedBox(height: 12),
 
-          // 3 Kotak Statistik
           _buildStatsRow(),
           const SizedBox(height: 20),
 
-          // Kategori Chips (Sesuai Desain Screenshot)
           Row(
             children: [
               const Expanded(
@@ -337,7 +430,6 @@ class _BerandaViewState extends State<_BerandaView> {
           ),
           const SizedBox(height: 10),
 
-          // Horizontal Chips Kategori (Rounded 8px, tanpa centang)
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -376,7 +468,6 @@ class _BerandaViewState extends State<_BerandaView> {
           ),
           const SizedBox(height: 16),
 
-          // Urutan Chips
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -413,7 +504,6 @@ class _BerandaViewState extends State<_BerandaView> {
           ),
           const SizedBox(height: 14),
 
-          // Daftar Card Talent
           if (talents.isEmpty)
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 32),

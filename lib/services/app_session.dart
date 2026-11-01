@@ -4,8 +4,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../config/env.dart';
 import '../pengguna.dart';
 
-/// Sesi pengguna yang sedang login. Dipakai semua halaman untuk membaca
-/// siapa user, role, dan apakah Mode Admin sedang aktif.
 class AppSession extends ChangeNotifier {
   AppSession._();
 
@@ -13,8 +11,10 @@ class AppSession extends ChangeNotifier {
 
   Pengguna? _profile;
   bool _isAdminMode = false;
+  bool _akunDiblokir = false;
 
   Pengguna? get profile => _profile;
+  bool get akunDiblokir => _akunDiblokir;
   bool get isLoggedIn => _profile != null;
   String? get userId => _profile?.id;
 
@@ -24,7 +24,6 @@ class AppSession extends ChangeNotifier {
 
   bool get isAdminMode => _isAdminMode;
 
-  /// Mode Admin hanya bisa menyala kalau user adalah admin.
   set isAdminMode(bool value) {
     final next = value && isAdmin;
     if (next == _isAdminMode) return;
@@ -32,8 +31,6 @@ class AppSession extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Baca ulang profil user yang sedang login. Kalau tidak ada sesi Supabase,
-  /// state dikosongkan.
   Future<void> muatProfil() async {
     if (!Env.terisi) return;
 
@@ -50,7 +47,17 @@ class AppSession extends ChangeNotifier {
       return;
     }
 
-    _profile = Pengguna.fromMap(row);
+    final pengguna = Pengguna.fromMap(row);
+    if (pengguna.diblokir) {
+      await db.auth.signOut();
+      _reset();
+      _akunDiblokir = true;
+      notifyListeners();
+      return;
+    }
+
+    _akunDiblokir = false;
+    _profile = pengguna;
     if (!isAdmin) _isAdminMode = false;
     notifyListeners();
   }
@@ -62,9 +69,16 @@ class AppSession extends ChangeNotifier {
     _reset();
   }
 
+  @visibleForTesting
+  void setProfileUntukTest(Pengguna? pengguna) {
+    _profile = pengguna;
+    notifyListeners();
+  }
+
   void _reset() {
     _profile = null;
     _isAdminMode = false;
+    _akunDiblokir = false;
     notifyListeners();
   }
 }

@@ -1,3 +1,5 @@
+import 'package:tubes_ppb_kelompok_1/pengguna.dart';
+import 'package:tubes_ppb_kelompok_1/services/app_session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tubes_ppb_kelompok_1/components/navbar.dart';
@@ -16,6 +18,10 @@ Future<void> _pilihKategori(WidgetTester tester, String label) async {
 }
 
 void main() {
+  setUp(() {
+    AppSession.instance.setProfileUntukTest(penggunaLogin);
+  });
+
   for (final size in const [Size(360, 740), Size(412, 915), Size(1280, 800)]) {
     testWidgets('beranda tanpa overflow di $size', (tester) async {
       tester.view.physicalSize = size;

@@ -31,3 +31,12 @@ class Pengguna {
 
   bool get diblokir => status == 'diblokir';
 }
+
+const penggunaLogin = Pengguna(
+  id: 'local-deva',
+  nama: 'Deva',
+  lokasi: 'Bandung, Jawa Barat',
+  role: 'pencari',
+  status: 'aktif',
+  saldo: 0,
+);

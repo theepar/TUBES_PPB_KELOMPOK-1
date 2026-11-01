@@ -4,8 +4,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../config/env.dart';
 import '../utils/app_colors.dart';
 
-/// Foto profil dari bucket `avatar`. Kalau belum ada foto atau gagal dimuat,
-/// tampilkan lingkaran dengan huruf pertama nama.
 class AvatarUser extends StatelessWidget {
   final String nama;
   final String? avatarPath;

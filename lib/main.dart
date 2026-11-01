@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'config/env.dart';
+import 'pages/auth_page.dart';
 import 'pages/beranda_page.dart';
 import 'services/app_session.dart';
 import 'utils/app_colors.dart';
@@ -46,7 +47,14 @@ class SewaSkillApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const BerandaPage(),
+      home: ListenableBuilder(
+        listenable: AppSession.instance,
+        builder: (context, _) {
+          return AppSession.instance.isLoggedIn
+              ? const BerandaPage()
+              : const AuthPage();
+        },
+      ),
     );
   }
 }
