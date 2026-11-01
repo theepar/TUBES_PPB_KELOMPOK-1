@@ -1,3 +1,6 @@
+# Konfigurasi rahasia lokal (salin dari env.example.json)
+env.json
+
 # Miscellaneous
 *.class
 *.log

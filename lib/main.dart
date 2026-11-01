@@ -1,9 +1,23 @@
 import 'package:flutter/material.dart';
 
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'config/env.dart';
 import 'pages/beranda_page.dart';
 import 'utils/app_colors.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (Env.terisi) {
+    await Supabase.initialize(
+      url: Env.supabaseUrl,
+      publishableKey: Env.supabaseAnonKey,
+    );
+  } else {
+    debugPrint(
+      'Supabase belum dikonfigurasi. Jalankan dengan --dart-define-from-file=env.json',
+    );
+  }
   runApp(const SewaSkillApp());
 }
 
