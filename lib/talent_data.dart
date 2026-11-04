@@ -1,4 +1,4 @@
-import 'talent.dart';
+import 'models/talent.dart';
 
 final List<Talent> daftarTalent = [
   Talent(
@@ -9,8 +9,7 @@ final List<Talent> daftarTalent = [
     rating: 4.9,
     jumlahUlasan: 120,
     jumlahOrder: 320,
-    deskripsi:
-        'Video editor 3 tahun yang berspesialisasi dalam konten media sosial berdurasi pendek. Menguasai Premiere Pro, CapCut Pro, dan DaVinci Resolve.',
+    deskripsi: 'Video editor 3 tahun yang berspesialisasi dalam konten media sosial berdurasi pendek. Menguasai Premiere Pro, CapCut Pro, dan DaVinci Resolve.',
     portfolioUrl: 'https://example.com/rizky',
   ),
   Talent(
@@ -21,8 +20,7 @@ final List<Talent> daftarTalent = [
     rating: 4.8,
     jumlahUlasan: 88,
     jumlahOrder: 210,
-    deskripsi:
-        'Desainer thumbnail yang fokus pada tampilan menarik klik untuk kreator YouTube.',
+    deskripsi: 'Desainer thumbnail yang fokus pada tampilan menarik klik untuk kreator YouTube.',
   ),
   Talent(
     id: 't3',
@@ -32,8 +30,7 @@ final List<Talent> daftarTalent = [
     rating: 4.7,
     jumlahUlasan: 65,
     jumlahOrder: 150,
-    deskripsi:
-        'Tutor pemrograman untuk pemula. Mengajar Python, HTML, CSS, dan JavaScript dengan contoh proyek nyata.',
+    deskripsi: 'Tutor pemrograman untuk pemula. Mengajar Python, HTML, CSS, dan JavaScript dengan contoh proyek nyata.',
     portfolioUrl: 'https://example.com/budi',
   ),
   Talent(
@@ -44,7 +41,6 @@ final List<Talent> daftarTalent = [
     rating: 4.6,
     jumlahUlasan: 54,
     jumlahOrder: 130,
-    deskripsi:
-        'Penulis artikel SEO dan copywriting untuk blog, toko online, dan media sosial.',
+    deskripsi: 'Penulis artikel SEO dan copywriting untuk blog, toko online, dan media sosial.',
   ),
 ];

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../talent_data.dart';
-import '../talent.dart';
+import '../models/talent.dart';
 import '../utils/app_colors.dart';
 
 class TambahJasaPage extends StatefulWidget {

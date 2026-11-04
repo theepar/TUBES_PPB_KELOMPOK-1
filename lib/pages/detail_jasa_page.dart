@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../talent.dart';
+
+import '../models/talent.dart';
 
 class DetailJasaPage extends StatelessWidget {
   final Talent talent;

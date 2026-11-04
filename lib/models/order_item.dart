@@ -1,4 +1,4 @@
-import '../talent.dart';
+import 'talent.dart';
 
 class OrderItem {
   final String id;

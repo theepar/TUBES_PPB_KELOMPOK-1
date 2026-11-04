@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../pengguna.dart';
+import '../models/pengguna.dart';
 import '../utils/app_colors.dart';
 import 'beranda_page.dart';
 
@@ -157,8 +157,9 @@ class _AuthPageState extends State<AuthPage> {
                               setState(() => _lihatPassword = !_lihatPassword),
                         ),
                       ),
-                      validator: (v) =>
-                          (v == null || v.isEmpty) ? 'Password wajib diisi' : null,
+                      validator: (v) => (v == null || v.isEmpty)
+                          ? 'Password wajib diisi'
+                          : null,
                     ),
                     const SizedBox(height: 20),
                     FilledButton(

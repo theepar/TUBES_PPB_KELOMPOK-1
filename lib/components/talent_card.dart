@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../talent.dart';
+import '../models/talent.dart';
 import '../utils/app_colors.dart';
 import '../utils/currency_formatter.dart';
 
@@ -117,7 +117,10 @@ class TalentCard extends StatelessWidget {
                     ),
                     child: const Text(
                       'Pesan',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ],

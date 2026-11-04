@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../models/order_item.dart';
-import '../talent.dart';
+import '../models/talent.dart';
 import '../utils/app_colors.dart';
 import '../utils/currency_formatter.dart';
 import 'pembayaran_page.dart';
