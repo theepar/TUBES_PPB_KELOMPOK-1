@@ -9,3 +9,9 @@ class Pengguna {
     required this.lokasi,
   });
 }
+
+const penggunaDefault = Pengguna(
+  nama: 'Deva',
+  email: 'deva@example.com',
+  lokasi: 'Bandung, Jawa Barat',
+);

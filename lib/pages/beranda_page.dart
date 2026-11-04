@@ -17,7 +17,7 @@ import 'tambah_jasa_page.dart';
 class BerandaPage extends StatefulWidget {
   final Pengguna pengguna;
 
-  const BerandaPage({super.key, required this.pengguna});
+  const BerandaPage({super.key, this.pengguna = penggunaDefault});
 
   @override
   State<BerandaPage> createState() => _BerandaPageState();
