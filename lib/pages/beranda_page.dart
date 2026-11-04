@@ -11,6 +11,7 @@ import 'detail_jasa_page.dart';
 import 'katalog_page.dart';
 import 'order_page.dart';
 import 'profil_page.dart';
+import 'riwayat_order_page.dart';
 import 'tambah_jasa_page.dart';
 
 class BerandaPage extends StatefulWidget {
@@ -33,15 +34,10 @@ class _BerandaPageState extends State<BerandaPage> {
 
   @override
   Widget build(BuildContext context) {
-    final firstTalent = daftarTalent.isNotEmpty ? daftarTalent.first : null;
-
     final pages = [
       _BerandaView(pengguna: widget.pengguna),
       const KatalogPage(),
-      if (firstTalent != null)
-        OrderPage(talent: firstTalent, onKembali: () => _onItemTapped(0))
-      else
-        const Scaffold(body: Center(child: Text('Data talent kosong'))),
+      RiwayatOrderPage(),
       ProfilPage(pengguna: widget.pengguna),
     ];
 
