@@ -37,7 +37,7 @@ class _BerandaPageState extends State<BerandaPage> {
 
     final pages = [
       _BerandaView(pengguna: widget.pengguna),
-      const KatalogPage(),
+      KatalogPage(key: ValueKey(daftarTalent.length)),
       if (firstTalent != null)
         OrderPage(talent: firstTalent, onKembali: () => _onItemTapped(0))
       else
@@ -53,10 +53,13 @@ class _BerandaPageState extends State<BerandaPage> {
         onDestinationSelected: _onItemTapped,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const TambahJasaPage()),
-        ),
+        onPressed: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const TambahJasaPage()),
+          );
+          setState(() {});
+        },
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         tooltip: 'Tambah Jasa',
