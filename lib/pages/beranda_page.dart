@@ -10,10 +10,13 @@ import '../utils/currency_formatter.dart';
 import 'detail_jasa_page.dart';
 import 'katalog_page.dart';
 import 'order_page.dart';
+import 'profil_page.dart';
 import 'tambah_jasa_page.dart';
 
 class BerandaPage extends StatefulWidget {
-  const BerandaPage({super.key});
+  final Pengguna pengguna;
+
+  const BerandaPage({super.key, required this.pengguna});
 
   @override
   State<BerandaPage> createState() => _BerandaPageState();
@@ -33,12 +36,13 @@ class _BerandaPageState extends State<BerandaPage> {
     final firstTalent = daftarTalent.isNotEmpty ? daftarTalent.first : null;
 
     final pages = [
-      const _BerandaView(),
+      _BerandaView(pengguna: widget.pengguna),
       const KatalogPage(),
       if (firstTalent != null)
         OrderPage(talent: firstTalent, onKembali: () => _onItemTapped(0))
       else
         const Scaffold(body: Center(child: Text('Data talent kosong'))),
+      ProfilPage(pengguna: widget.pengguna),
     ];
 
     return Scaffold(
@@ -81,7 +85,9 @@ const _kategori = [
 const _opsiUrut = ['Terlaris', 'Termurah', 'Rating'];
 
 class _BerandaView extends StatefulWidget {
-  const _BerandaView();
+  final Pengguna pengguna;
+
+  const _BerandaView({required this.pengguna});
 
   @override
   State<_BerandaView> createState() => _BerandaViewState();
@@ -145,7 +151,7 @@ class _BerandaViewState extends State<_BerandaView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Hi, ${penggunaLogin.nama}',
+                      'Hi, ${widget.pengguna.nama}',
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -168,7 +174,7 @@ class _BerandaViewState extends State<_BerandaView> {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          penggunaLogin.lokasi,
+                          widget.pengguna.lokasi,
                           style: const TextStyle(
                             fontSize: 12.5,
                             fontWeight: FontWeight.w500,
