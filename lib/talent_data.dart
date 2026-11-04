@@ -1,7 +1,8 @@
 import 'talent.dart';
 
-const List<Talent> daftarTalent = [
+final List<Talent> daftarTalent = [
   Talent(
+    id: 't1',
     nama: 'Rizky Aditya',
     bidang: 'Edit Video Pendek (Reels/TikTok)',
     hargaMulai: 50000,
@@ -10,8 +11,10 @@ const List<Talent> daftarTalent = [
     jumlahOrder: 320,
     deskripsi:
         'Video editor 3 tahun yang berspesialisasi dalam konten media sosial berdurasi pendek. Menguasai Premiere Pro, CapCut Pro, dan DaVinci Resolve.',
+    portfolioUrl: 'https://example.com/rizky',
   ),
   Talent(
+    id: 't2',
     nama: 'Sari Dewi',
     bidang: 'Desain Thumbnail YouTube',
     hargaMulai: 35000,
@@ -22,6 +25,7 @@ const List<Talent> daftarTalent = [
         'Desainer thumbnail yang fokus pada tampilan menarik klik untuk kreator YouTube.',
   ),
   Talent(
+    id: 't3',
     nama: 'Budi Santoso',
     bidang: 'Tutor Koding (Python & Web)',
     hargaMulai: 75000,
@@ -30,8 +34,10 @@ const List<Talent> daftarTalent = [
     jumlahOrder: 150,
     deskripsi:
         'Tutor pemrograman untuk pemula. Mengajar Python, HTML, CSS, dan JavaScript dengan contoh proyek nyata.',
+    portfolioUrl: 'https://example.com/budi',
   ),
   Talent(
+    id: 't4',
     nama: 'Maya Putri',
     bidang: 'Penulisan Konten & Artikel SEO',
     hargaMulai: 40000,

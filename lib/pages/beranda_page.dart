@@ -36,8 +36,11 @@ class _BerandaPageState extends State<BerandaPage> {
   Widget build(BuildContext context) {
     final pages = [
       _BerandaView(pengguna: widget.pengguna),
-      const KatalogPage(),
-      RiwayatOrderPage(),
+      KatalogPage(key: ValueKey(daftarTalent.length)),
+      if (firstTalent != null)
+        OrderPage(talent: firstTalent, onKembali: () => _onItemTapped(0))
+      else
+        const Scaffold(body: Center(child: Text('Data talent kosong'))),
       ProfilPage(pengguna: widget.pengguna),
     ];
 
@@ -49,10 +52,13 @@ class _BerandaPageState extends State<BerandaPage> {
         onDestinationSelected: _onItemTapped,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const TambahJasaPage()),
-        ),
+        onPressed: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const TambahJasaPage()),
+          );
+          setState(() {});
+        },
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         tooltip: 'Tambah Jasa',

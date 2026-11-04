@@ -8,12 +8,14 @@ class TalentCard extends StatelessWidget {
   final Talent talent;
   final VoidCallback? onTap;
   final VoidCallback? onOrderTap;
+  final Widget? menu;
 
   const TalentCard({
     super.key,
     required this.talent,
     this.onTap,
     this.onOrderTap,
+    this.menu,
   });
 
   @override
@@ -84,6 +86,7 @@ class TalentCard extends StatelessWidget {
                       color: AppColors.primary,
                     ),
                   ),
+                  ?menu,
                 ],
               ),
               const SizedBox(height: 12),
