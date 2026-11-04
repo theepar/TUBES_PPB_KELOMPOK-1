@@ -1,351 +1,243 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
-import '../models/order_item.dart';
 import '../models/talent.dart';
-import '../utils/app_colors.dart';
 import '../utils/currency_formatter.dart';
-import 'pembayaran_page.dart';
-
-final List<OrderItem> daftarOrder = [];
 
 class OrderPage extends StatefulWidget {
   final Talent talent;
-  final VoidCallback? onKembali;
 
-  const OrderPage({super.key, required this.talent, this.onKembali});
+  const OrderPage({super.key, required this.talent});
 
   @override
   State<OrderPage> createState() => _OrderPageState();
 }
 
 class _OrderPageState extends State<OrderPage> {
-  String _paketTerpilih = 'Basic';
-  final _catatanController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  String _paket = 'Standard';
+  String _metode = 'BCA';
 
-  static const _paketList = ['Basic', 'Standard', 'Premium'];
+  int get _harga => widget.talent.hargaPaket(_paket);
+  int get _biayaLayanan => (_harga * 0.05).round();
+  int get _total => _harga + _biayaLayanan;
 
-  @override
-  void dispose() {
-    _catatanController.dispose();
-    super.dispose();
+  String? _wajib(String? nilai) {
+    if (nilai == null || nilai.trim().isEmpty) {
+      return 'Kolom ini wajib diisi';
+    }
+    return null;
   }
 
-  int get _hargaTerpilih => widget.talent.hargaPaket(_paketTerpilih);
+  void _tampilkanPesan(String pesan) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(pesan)));
+  }
 
-  void _pesan() {
-    if (_catatanController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Mohon isi catatan / instruksi kebutuhan Anda'),
-        ),
-      );
+  void _kirim() {
+    if (_formKey.currentState!.validate() == false) {
       return;
     }
 
-    final order = OrderItem(
-      id: 'ORD-${Random().nextInt(90000) + 10000}',
-      talent: widget.talent,
-      namaJasa: widget.talent.bidang,
-      buyerName: 'Saya',
-      sellerName: widget.talent.nama,
-      paket: _paketTerpilih,
-      total: _hargaTerpilih,
-      catatan: _catatanController.text.trim(),
+    _tampilkanPesan(
+      'Pesanan ${widget.talent.nama} (Paket $_paket) berhasil dikirim. Total ${formatRupiah(_total)}.',
     );
-    daftarOrder.insert(0, order);
+  }
 
-    Navigator.push<bool>(
-      context,
-      MaterialPageRoute(
-        builder: (_) => PembayaranPage(
-          total: order.total,
-          namaJasa: order.namaJasa,
-          paket: order.paket,
-        ),
+  Widget _baris(String label, String nilai, {bool tebal = false}) {
+    final gaya = tebal ? const TextStyle(fontWeight: FontWeight.bold) : null;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Expanded(child: Text(label, style: gaya)),
+          Text(nilai, style: gaya),
+        ],
       ),
-    ).then((bayarBerhasil) {
-      if (bayarBerhasil == true) {
-        order.status = 'dibayar';
-        order.metodeBayar = 'QRIS (Simulasi)';
-      }
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            bayarBerhasil == true
-                ? 'Pembayaran berhasil! Pesanan sedang diproses.'
-                : 'Pesanan tersimpan. Selesaikan pembayaran dari Riwayat Order.',
-          ),
-        ),
-      );
-
-      if (widget.onKembali != null) {
-        widget.onKembali!();
-      } else {
-        Navigator.pop(context);
-      }
-    });
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: const Text(
-          'Pesan Jasa',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-            color: AppColors.ink,
-          ),
-        ),
-        centerTitle: true,
-        leading: widget.onKembali != null
-            ? IconButton(
-                icon: const Icon(Icons.arrow_back, color: AppColors.ink),
-                onPressed: widget.onKembali,
-              )
-            : null,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: AppColors.track),
-              ),
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    radius: 28,
-                    backgroundColor: AppColors.skyLight,
-                    child: Text(
-                      widget.talent.nama[0],
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.talent.nama,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
-                            color: AppColors.ink,
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          widget.talent.bidang,
-                          style: const TextStyle(
-                            fontSize: 12.5,
-                            color: AppColors.inkSoft,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.star_rounded,
-                              size: 14,
-                              color: AppColors.star,
-                            ),
-                            const SizedBox(width: 3),
-                            Text(
-                              '${widget.talent.rating}  •  ${widget.talent.jumlahOrder} order',
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: AppColors.inkSoft,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
+    final tema = Theme.of(context).textTheme;
+    final talent = widget.talent;
 
-            const Text(
-              'Pilih Paket',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-                color: AppColors.ink,
-              ),
-            ),
-            const SizedBox(height: 10),
-            ..._paketList.map((paket) {
-              final harga = widget.talent.hargaPaket(paket);
-              final terpilih = _paketTerpilih == paket;
-              return GestureDetector(
-                onTap: () => setState(() => _paketTerpilih = paket),
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 10),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    color: terpilih ? AppColors.skyLight : Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: terpilih ? AppColors.primary : AppColors.track,
-                      width: terpilih ? 1.5 : 1,
-                    ),
-                  ),
-                  child: Row(
+    return Scaffold(
+      appBar: AppBar(title: const Text('Order')),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          Text('Konfirmasi & Pesan Jasa', style: tema.headlineSmall),
+          const SizedBox(height: 16),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Ringkasan Pesanan', style: tema.titleMedium),
+                  const SizedBox(height: 12),
+                  Row(
                     children: [
-                      Icon(
-                        terpilih
-                            ? Icons.radio_button_checked
-                            : Icons.radio_button_unchecked,
-                        color: terpilih ? AppColors.primary : AppColors.inkSoft,
-                        size: 20,
-                      ),
-                      const SizedBox(width: 10),
+                      CircleAvatar(child: Text(talent.nama[0])),
+                      const SizedBox(width: 12),
                       Expanded(
-                        child: Text(
-                          'Paket $paket',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: terpilih
-                                ? FontWeight.bold
-                                : FontWeight.normal,
-                            color: terpilih ? AppColors.primary : AppColors.ink,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        formatRupiah(harga),
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: terpilih
-                              ? AppColors.primary
-                              : AppColors.inkSoft,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Talent: ${talent.nama}'),
+                            Text('Jasa: ${talent.bidang}'),
+                            Text('Paket: $_paket'),
+                          ],
                         ),
                       ),
                     ],
                   ),
-                ),
-              );
-            }),
-            const SizedBox(height: 20),
-
-            const Text(
-              'Catatan / Instruksi',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-                color: AppColors.ink,
-              ),
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _catatanController,
-              maxLines: 4,
-              decoration: InputDecoration(
-                hintText:
-                    'Tuliskan kebutuhan atau instruksi khusus Anda di sini...',
-                hintStyle: const TextStyle(
-                  color: AppColors.inkSoft,
-                  fontSize: 13,
-                ),
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: AppColors.track),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: AppColors.track),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(
-                    color: AppColors.primary,
-                    width: 1.5,
+                  const Divider(height: 24),
+                  _baris('Jasa Paket $_paket', formatRupiah(_harga)),
+                  _baris(
+                    'Biaya Layanan Platform (5%)',
+                    formatRupiah(_biayaLayanan),
                   ),
-                ),
-                contentPadding: const EdgeInsets.all(14),
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              decoration: BoxDecoration(
-                color: AppColors.skyLight,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.skyHaze),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                  const Divider(),
+                  _baris('Total Pembayaran', formatRupiah(_total), tebal: true),
+                  const SizedBox(height: 8),
                   const Text(
-                    'Total Pembayaran',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                      color: AppColors.ink,
-                    ),
-                  ),
-                  Text(
-                    formatRupiah(_hargaTerpilih),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: AppColors.primary,
-                    ),
+                    'Estimasi selesai: 2 hari kerja setelah brief diterima',
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 24),
-          ],
-        ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-        child: SizedBox(
-          width: double.infinity,
-          height: 50,
-          child: ElevatedButton(
-            onPressed: _pesan,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            child: const Text(
-              'Pesan dan Bayar',
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 24),
+          Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text('Data Pemesan', style: tema.titleMedium),
+                const SizedBox(height: 8),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Nama Lengkap *',
+                    hintText: 'Contoh: Dinda Rahayu',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: _wajib,
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(
+                    labelText: 'Alamat Email *',
+                    hintText: 'Contoh: dinda@email.com',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (nilai) {
+                    if (nilai == null || nilai.trim().isEmpty) {
+                      return 'Email wajib diisi';
+                    }
+                    if (!nilai.contains('@')) {
+                      return 'Format email belum benar';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  keyboardType: TextInputType.phone,
+                  decoration: const InputDecoration(
+                    labelText: 'Nomor WhatsApp *',
+                    hintText: 'Contoh: 08123456789',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: _wajib,
+                ),
+                const SizedBox(height: 24),
+                Text('Detail Pesanan', style: tema.titleMedium),
+                const SizedBox(height: 8),
+                const Text('Pilih Paket *'),
+                DropdownButton<String>(
+                  value: _paket,
+                  isExpanded: true,
+                  items: const [
+                    DropdownMenuItem(
+                      value: 'Basic',
+                      child: Text('Paket Basic'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Standard',
+                      child: Text('Paket Standard'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Premium',
+                      child: Text('Paket Premium'),
+                    ),
+                  ],
+                  onChanged: (nilai) {
+                    if (nilai != null) {
+                      setState(() {
+                        _paket = nilai;
+                      });
+                    }
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  maxLines: 5,
+                  decoration: const InputDecoration(
+                    labelText: 'Brief Proyek / Catatan untuk Talent *',
+                    hintText:
+                        'Jelaskan tema, gaya yang diinginkan, dan referensi.',
+                    alignLabelWithHint: true,
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: _wajib,
+                ),
+                const SizedBox(height: 24),
+                Text('Metode Pembayaran', style: tema.titleMedium),
+                RadioGroup<String>(
+                  groupValue: _metode,
+                  onChanged: (nilai) {
+                    if (nilai != null) {
+                      setState(() {
+                        _metode = nilai;
+                      });
+                    }
+                  },
+                  child: const Column(
+                    children: [
+                      RadioListTile<String>(
+                        value: 'BCA',
+                        title: Text('Transfer Bank BCA'),
+                      ),
+                      RadioListTile<String>(
+                        value: 'GoPay',
+                        title: Text('GoPay'),
+                      ),
+                      RadioListTile<String>(value: 'DANA', title: Text('DANA')),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Total yang akan dibayar: ${formatRupiah(_total)}',
+                  style: tema.titleMedium,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
+                FilledButton(
+                  onPressed: _kirim,
+                  child: const Text('Konfirmasi & Bayar Sekarang'),
+                ),
+                const SizedBox(height: 8),
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Kembali ke Halaman Jasa'),
+                ),
+              ],
             ),
           ),
-        ),
+        ],
       ),
     );
   }
