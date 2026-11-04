@@ -15,7 +15,7 @@ class Navbar extends StatelessWidget {
   static const _items = [
     _NavItem('Beranda', Icons.home_rounded),
     _NavItem('Katalog', Icons.search_rounded),
-    _NavItem('Order', Icons.receipt_long_rounded),
+    _NavItem('Riwayat', Icons.receipt_long_rounded),
     _NavItem('Profil', Icons.person_outline_rounded),
   ];
 

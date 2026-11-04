@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../components/navbar.dart';
 import '../components/talent_card.dart';
-import '../pengguna.dart';
-import '../talent.dart';
+import '../models/pengguna.dart';
+import '../models/talent.dart';
 import '../talent_data.dart';
 import '../utils/app_colors.dart';
 import '../utils/currency_formatter.dart';

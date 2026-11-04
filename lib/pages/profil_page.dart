@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../pengguna.dart';
+import '../models/pengguna.dart';
 import '../utils/app_colors.dart';
 
 class ProfilPage extends StatelessWidget {
