@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../models/talent.dart';
-import '../utils/currency_formatter.dart';
 
 class OrderPage extends StatefulWidget {
   final Talent talent;
@@ -38,7 +37,7 @@ class _OrderPageState extends State<OrderPage> {
     }
 
     _tampilkanPesan(
-      'Pesanan ${widget.talent.nama} (Paket $_paket) berhasil dikirim. Total ${formatRupiah(_total)}.',
+      'Pesanan ${widget.talent.nama} (Paket $_paket) berhasil dikirim. Total Rp $_total.',
     );
   }
 
@@ -93,13 +92,13 @@ class _OrderPageState extends State<OrderPage> {
                     ],
                   ),
                   const Divider(height: 24),
-                  _baris('Jasa Paket $_paket', formatRupiah(_harga)),
+                  _baris('Jasa Paket $_paket', 'Rp $_harga'),
                   _baris(
                     'Biaya Layanan Platform (5%)',
-                    formatRupiah(_biayaLayanan),
+                    'Rp $_biayaLayanan',
                   ),
                   const Divider(),
-                  _baris('Total Pembayaran', formatRupiah(_total), tebal: true),
+                  _baris('Total Pembayaran', 'Rp $_total', tebal: true),
                   const SizedBox(height: 8),
                   const Text(
                     'Estimasi selesai: 2 hari kerja setelah brief diterima',
@@ -220,7 +219,7 @@ class _OrderPageState extends State<OrderPage> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Total yang akan dibayar: ${formatRupiah(_total)}',
+                  'Total yang akan dibayar: Rp $_total',
                   style: tema.titleMedium,
                   textAlign: TextAlign.center,
                 ),

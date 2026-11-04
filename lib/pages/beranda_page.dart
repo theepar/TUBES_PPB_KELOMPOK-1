@@ -6,7 +6,6 @@ import '../models/pengguna.dart';
 import '../models/talent.dart';
 import '../talent_data.dart';
 import '../utils/app_colors.dart';
-import '../utils/currency_formatter.dart';
 import 'detail_jasa_page.dart';
 import 'katalog_page.dart';
 import 'order_page.dart';
@@ -447,7 +446,7 @@ class _BerandaViewState extends State<_BerandaView> {
       final minHarga = list
           .map((t) => t.hargaMulai)
           .reduce((a, b) => a < b ? a : b);
-      nilaiStr = formatRupiah(minHarga).replaceFirst('Rp ', '');
+      nilaiStr = minHarga.toString();
       keterangan = 'Rupiah, harga mulai dari';
     } else {
       final avgRating =
