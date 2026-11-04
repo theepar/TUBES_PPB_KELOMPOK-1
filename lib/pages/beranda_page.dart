@@ -37,10 +37,7 @@ class _BerandaPageState extends State<BerandaPage> {
     final pages = [
       _BerandaView(pengguna: widget.pengguna),
       KatalogPage(key: ValueKey(daftarTalent.length)),
-      if (firstTalent != null)
-        OrderPage(talent: firstTalent, onKembali: () => _onItemTapped(0))
-      else
-        const Scaffold(body: Center(child: Text('Data talent kosong'))),
+      RiwayatOrderPage(),
       ProfilPage(pengguna: widget.pengguna),
     ];
 
