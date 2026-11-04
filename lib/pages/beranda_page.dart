@@ -141,7 +141,6 @@ class _BerandaViewState extends State<_BerandaView> {
       child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Header Sapaan & Lokasi
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,7 +197,6 @@ class _BerandaViewState extends State<_BerandaView> {
           ),
           const SizedBox(height: 16),
 
-          // Hero Ringkasan Card
           Card(
             elevation: 1,
             shape: RoundedRectangleBorder(
@@ -219,14 +217,18 @@ class _BerandaViewState extends State<_BerandaView> {
                         selectedColor: AppColors.primary,
                         backgroundColor: Colors.white,
                         side: BorderSide(
-                          color: _heroTab == 0 ? AppColors.primary : AppColors.track,
+                          color: _heroTab == 0
+                              ? AppColors.primary
+                              : AppColors.track,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                         labelStyle: TextStyle(
                           fontSize: 13,
-                          fontWeight: _heroTab == 0 ? FontWeight.bold : FontWeight.w500,
+                          fontWeight: _heroTab == 0
+                              ? FontWeight.bold
+                              : FontWeight.w500,
                           color: _heroTab == 0 ? Colors.white : AppColors.ink,
                         ),
                         onSelected: (_) => setState(() => _heroTab = 0),
@@ -239,14 +241,18 @@ class _BerandaViewState extends State<_BerandaView> {
                         selectedColor: AppColors.primary,
                         backgroundColor: Colors.white,
                         side: BorderSide(
-                          color: _heroTab == 1 ? AppColors.primary : AppColors.track,
+                          color: _heroTab == 1
+                              ? AppColors.primary
+                              : AppColors.track,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                         labelStyle: TextStyle(
                           fontSize: 13,
-                          fontWeight: _heroTab == 1 ? FontWeight.bold : FontWeight.w500,
+                          fontWeight: _heroTab == 1
+                              ? FontWeight.bold
+                              : FontWeight.w500,
                           color: _heroTab == 1 ? Colors.white : AppColors.ink,
                         ),
                         onSelected: (_) => setState(() => _heroTab = 1),
@@ -261,11 +267,9 @@ class _BerandaViewState extends State<_BerandaView> {
           ),
           const SizedBox(height: 12),
 
-          // 3 Kotak Statistik
           _buildStatsRow(),
           const SizedBox(height: 20),
 
-          // Kategori Chips (Sesuai Desain Screenshot)
           Row(
             children: [
               const Expanded(
@@ -283,7 +287,10 @@ class _BerandaViewState extends State<_BerandaView> {
                 initialValue: _kategoriIndex,
                 onSelected: (i) => setState(() => _kategoriIndex = i),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 4,
+                    horizontal: 4,
+                  ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -315,7 +322,6 @@ class _BerandaViewState extends State<_BerandaView> {
           ),
           const SizedBox(height: 10),
 
-          // Horizontal Chips Kategori (Rounded 8px, tanpa centang)
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -354,7 +360,6 @@ class _BerandaViewState extends State<_BerandaView> {
           ),
           const SizedBox(height: 16),
 
-          // Urutan Chips
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -391,7 +396,6 @@ class _BerandaViewState extends State<_BerandaView> {
           ),
           const SizedBox(height: 14),
 
-          // Daftar Card Talent
           if (talents.isEmpty)
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 32),
