@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'pages/auth_page.dart';
+import 'pages/beranda_page.dart';
 import 'utils/app_colors.dart';
 
 void main() {
@@ -30,7 +30,7 @@ class SewaSkillApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const AuthPage(),
+      home: const BerandaPage(),
     );
   }
 }

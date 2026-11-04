@@ -11,13 +11,12 @@ import 'detail_jasa_page.dart';
 import 'katalog_page.dart';
 import 'order_page.dart';
 import 'profil_page.dart';
-import 'riwayat_order_page.dart';
 import 'tambah_jasa_page.dart';
 
 class BerandaPage extends StatefulWidget {
   final Pengguna pengguna;
 
-  const BerandaPage({super.key, required this.pengguna});
+  const BerandaPage({super.key, this.pengguna = penggunaDefault});
 
   @override
   State<BerandaPage> createState() => _BerandaPageState();
@@ -37,7 +36,6 @@ class _BerandaPageState extends State<BerandaPage> {
     final pages = [
       _BerandaView(pengguna: widget.pengguna),
       KatalogPage(key: ValueKey(daftarTalent.length)),
-      RiwayatOrderPage(),
       ProfilPage(pengguna: widget.pengguna),
     ];
 
