@@ -4,6 +4,8 @@ import '../pengguna.dart';
 import '../utils/app_colors.dart';
 import 'beranda_page.dart';
 
+const _lokasiDefault = 'Bandung, Jawa Barat';
+
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
 
@@ -13,13 +15,18 @@ class AuthPage extends StatefulWidget {
 
 class _AuthPageState extends State<AuthPage> {
   final _formKey = GlobalKey<FormState>();
+  final _nama = TextEditingController();
+  final _lokasi = TextEditingController();
   final _email = TextEditingController();
   final _password = TextEditingController();
 
+  bool _daftar = false;
   bool _lihatPassword = false;
 
   @override
   void dispose() {
+    _nama.dispose();
+    _lokasi.dispose();
     _email.dispose();
     _password.dispose();
     super.dispose();
@@ -35,20 +42,34 @@ class _AuthPageState extends State<AuthPage> {
     return bagian[0].toUpperCase() + bagian.substring(1);
   }
 
-  void _masuk() {
+  void _submit() {
     if (!_formKey.currentState!.validate()) return;
 
     final email = _email.text.trim();
-    final pengguna = Pengguna(
-      nama: _namaDariEmail(email),
-      email: email,
-      lokasi: 'Bandung, Jawa Barat',
-    );
+    final lokasi = _lokasi.text.trim();
+    final pengguna = _daftar
+        ? Pengguna(
+            nama: _nama.text.trim(),
+            email: email,
+            lokasi: lokasi.isEmpty ? _lokasiDefault : lokasi,
+          )
+        : Pengguna(
+            nama: _namaDariEmail(email),
+            email: email,
+            lokasi: _lokasiDefault,
+          );
 
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (_) => BerandaPage(pengguna: pengguna)),
     );
+  }
+
+  void _gantiMode() {
+    setState(() {
+      _daftar = !_daftar;
+      _formKey.currentState?.reset();
+    });
   }
 
   @override
@@ -76,12 +97,37 @@ class _AuthPageState extends State<AuthPage> {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    const Text(
-                      'Masuk ke akunmu',
+                    Text(
+                      _daftar ? 'Buat akun baru' : 'Masuk ke akunmu',
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 14, color: AppColors.inkSoft),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: AppColors.inkSoft,
+                      ),
                     ),
                     const SizedBox(height: 24),
+                    if (_daftar) ...[
+                      TextFormField(
+                        controller: _nama,
+                        textCapitalization: TextCapitalization.words,
+                        decoration: const InputDecoration(
+                          labelText: 'Nama',
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (v) => _wajib(v, 'Nama'),
+                      ),
+                      const SizedBox(height: 12),
+                      TextFormField(
+                        controller: _lokasi,
+                        textCapitalization: TextCapitalization.words,
+                        decoration: const InputDecoration(
+                          labelText: 'Lokasi (kota)',
+                          helperText: 'Kosongkan untuk $_lokasiDefault',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                    ],
                     TextFormField(
                       controller: _email,
                       keyboardType: TextInputType.emailAddress,
@@ -116,12 +162,21 @@ class _AuthPageState extends State<AuthPage> {
                     ),
                     const SizedBox(height: 20),
                     FilledButton(
-                      onPressed: _masuk,
+                      onPressed: _submit,
                       style: FilledButton.styleFrom(
                         backgroundColor: AppColors.primary,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
-                      child: const Text('Masuk'),
+                      child: Text(_daftar ? 'Daftar' : 'Masuk'),
+                    ),
+                    const SizedBox(height: 8),
+                    TextButton(
+                      onPressed: _gantiMode,
+                      child: Text(
+                        _daftar
+                            ? 'Sudah punya akun? Masuk'
+                            : 'Belum punya akun? Daftar',
+                      ),
                     ),
                   ],
                 ),
