@@ -1,9 +1,26 @@
 import 'package:flutter/material.dart';
 
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'config/env.dart';
 import 'pages/auth_page.dart';
+import 'pages/beranda_page.dart';
+import 'services/app_session.dart';
 import 'utils/app_colors.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (Env.terisi) {
+    await Supabase.initialize(
+      url: Env.supabaseUrl,
+      publishableKey: Env.supabaseAnonKey,
+    );
+    await AppSession.instance.muatProfil();
+  } else {
+    debugPrint(
+      'Supabase belum dikonfigurasi. Jalankan dengan --dart-define-from-file=env.json',
+    );
+  }
   runApp(const SewaSkillApp());
 }
 
@@ -30,7 +47,14 @@ class SewaSkillApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const AuthPage(),
+      home: ListenableBuilder(
+        listenable: AppSession.instance,
+        builder: (context, _) {
+          return AppSession.instance.isLoggedIn
+              ? const BerandaPage()
+              : const AuthPage();
+        },
+      ),
     );
   }
 }

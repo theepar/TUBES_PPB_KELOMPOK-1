@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../components/avatar_user.dart';
+import '../components/halaman_placeholder.dart';
 import '../components/navbar.dart';
 import '../components/talent_card.dart';
 import '../pengguna.dart';
+import '../services/app_session.dart';
 import '../talent.dart';
 import '../talent_data.dart';
 import '../utils/app_colors.dart';
@@ -15,9 +18,7 @@ import 'riwayat_order_page.dart';
 import 'tambah_jasa_page.dart';
 
 class BerandaPage extends StatefulWidget {
-  final Pengguna pengguna;
-
-  const BerandaPage({super.key, required this.pengguna});
+  const BerandaPage({super.key});
 
   @override
   State<BerandaPage> createState() => _BerandaPageState();
@@ -25,6 +26,31 @@ class BerandaPage extends StatefulWidget {
 
 class _BerandaPageState extends State<BerandaPage> {
   int _selectedIndex = 0;
+  bool _modeAdminTerakhir = AppSession.instance.isAdminMode;
+
+  @override
+  void initState() {
+    super.initState();
+    AppSession.instance.addListener(_onSessionChanged);
+  }
+
+  @override
+  void dispose() {
+    AppSession.instance.removeListener(_onSessionChanged);
+    super.dispose();
+  }
+
+  // Saat Mode Admin dinyalakan atau dimatikan, set tab ke yang pertama.
+  void _onSessionChanged() {
+    if (!mounted) return;
+    final admin = AppSession.instance.isAdminMode;
+    setState(() {
+      if (admin != _modeAdminTerakhir) {
+        _modeAdminTerakhir = admin;
+        _selectedIndex = 0;
+      }
+    });
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -32,35 +58,54 @@ class _BerandaPageState extends State<BerandaPage> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final pages = [
-      _BerandaView(pengguna: widget.pengguna),
+  // Urutan harus sama dengan Navbar.tujuanBiasa dan Navbar.tujuanAdmin.
+  List<Widget> _halaman(bool modeAdmin) {
+    if (modeAdmin) {
+      return const [
+        HalamanPlaceholder(judul: 'Manajemen Pembelian'),
+        HalamanPlaceholder(judul: 'Manajemen Akun'),
+        ProfilPage(),
+      ];
+    }
+
+    return [
+      const _BerandaView(),
       KatalogPage(key: ValueKey(daftarTalent.length)),
       RiwayatOrderPage(),
-      ProfilPage(pengguna: widget.pengguna),
+      const HalamanPlaceholder(judul: 'Favorit'),
+      const ProfilPage(),
     ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final session = AppSession.instance;
+    final modeAdmin = session.isAdminMode;
+    final pages = _halaman(modeAdmin);
+    final index = _selectedIndex < pages.length ? _selectedIndex : 0;
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: IndexedStack(index: _selectedIndex, children: pages),
+      body: IndexedStack(index: index, children: pages),
       bottomNavigationBar: Navbar(
-        selectedIndex: _selectedIndex,
+        selectedIndex: index,
         onDestinationSelected: _onItemTapped,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const TambahJasaPage()),
-          );
-          setState(() {});
-        },
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
-        tooltip: 'Tambah Jasa',
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: (!modeAdmin && session.isPenyedia && index == 0)
+          ? FloatingActionButton(
+              onPressed: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const TambahJasaPage()),
+                );
+                setState(() {});
+              },
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+              tooltip: 'Tambah Jasa',
+              child: const Icon(Icons.add),
+            )
+          : null,
     );
   }
 }
@@ -84,9 +129,7 @@ const _kategori = [
 const _opsiUrut = ['Terlaris', 'Termurah', 'Rating'];
 
 class _BerandaView extends StatefulWidget {
-  final Pengguna pengguna;
-
-  const _BerandaView({required this.pengguna});
+  const _BerandaView();
 
   @override
   State<_BerandaView> createState() => _BerandaViewState();
@@ -94,8 +137,24 @@ class _BerandaView extends StatefulWidget {
 
 class _BerandaViewState extends State<_BerandaView> {
   int _kategoriIndex = 0;
-  int _heroTab = 0; // 0 = Harga, 1 = Rating
-  int _urutTab = 0; // 0 = Terlaris, 1 = Termurah, 2 = Rating
+  int _heroTab = 0;
+  int _urutTab = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    AppSession.instance.addListener(_onSessionChanged);
+  }
+
+  @override
+  void dispose() {
+    AppSession.instance.removeListener(_onSessionChanged);
+    super.dispose();
+  }
+
+  void _onSessionChanged() {
+    if (mounted) setState(() {});
+  }
 
   List<Talent> get _terfilter {
     final kata = _kategori[_kategoriIndex].kata;
@@ -131,10 +190,105 @@ class _BerandaViewState extends State<_BerandaView> {
     );
   }
 
+  void _bukaProfil(BuildContext context, Pengguna profil) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 24, 20, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AvatarUser(
+                  nama: profil.nama,
+                  avatarPath: profil.avatarPath,
+                  radius: 32,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  profil.nama,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.ink,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  '${profil.role.toUpperCase()} · ${profil.lokasi}',
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: AppColors.inkSoft,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: AppColors.background,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.track),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Saldo Akun',
+                        style: TextStyle(fontSize: 13, color: AppColors.inkSoft),
+                      ),
+                      Text(
+                        formatRupiah(profil.saldo),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () async {
+                      Navigator.pop(ctx);
+                      await AppSession.instance.keluar();
+                    },
+                    icon: const Icon(Icons.logout, size: 18, color: Colors.red),
+                    label: const Text(
+                      'Keluar / Logout',
+                      style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: Colors.red),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final talents = _terurut;
     final terpilih = _kategori[_kategoriIndex];
+    final profil = AppSession.instance.profile ?? penggunaLogin;
+    final nama = profil.nama.isNotEmpty ? profil.nama : 'Deva';
+    final lokasi = profil.lokasi.isNotEmpty ? profil.lokasi : 'Bandung, Jawa Barat';
 
     return SafeArea(
       child: ListView(
@@ -144,12 +298,21 @@ class _BerandaViewState extends State<_BerandaView> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              GestureDetector(
+                onTap: () => _bukaProfil(context, profil),
+                child: AvatarUser(
+                  nama: nama,
+                  avatarPath: profil.avatarPath,
+                  radius: 24,
+                ),
+              ),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Hi, ${widget.pengguna.nama}',
+                      'Hi, $nama',
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -163,7 +326,6 @@ class _BerandaViewState extends State<_BerandaView> {
                     ),
                     const SizedBox(height: 6),
                     Row(
-                      mainAxisSize: MainAxisSize.min,
                       children: [
                         const Icon(
                           Icons.location_on,
@@ -171,12 +333,16 @@ class _BerandaViewState extends State<_BerandaView> {
                           color: AppColors.primary,
                         ),
                         const SizedBox(width: 4),
-                        Text(
-                          widget.pengguna.lokasi,
-                          style: const TextStyle(
-                            fontSize: 12.5,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.inkSoft,
+                        Expanded(
+                          child: Text(
+                            lokasi,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.inkSoft,
+                            ),
                           ),
                         ),
                       ],
