@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../models/talent.dart';
 import '../utils/app_colors.dart';
-import '../utils/currency_formatter.dart';
 import 'order_page.dart';
 
 class DetailJasaPage extends StatelessWidget {
@@ -135,7 +134,7 @@ class DetailJasaPage extends StatelessWidget {
                     dense: true,
                     title: Text(paket),
                     trailing: Text(
-                      formatRupiah(t.hargaPaket(paket)),
+                      'Rp ${t.hargaPaket(paket)}',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         color: AppColors.primary,

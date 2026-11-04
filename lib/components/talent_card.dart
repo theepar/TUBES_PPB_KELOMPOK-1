@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../models/talent.dart';
 import '../utils/app_colors.dart';
-import '../utils/currency_formatter.dart';
 
 class TalentCard extends StatelessWidget {
   final Talent talent;
@@ -79,7 +78,7 @@ class TalentCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    formatRupiah(talent.hargaMulai),
+                    'Rp ${talent.hargaMulai}',
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
