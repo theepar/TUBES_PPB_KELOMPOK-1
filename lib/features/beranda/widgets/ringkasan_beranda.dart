@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../models/talent.dart';
-import '../utils/app_colors.dart';
+import '../../../core/models/talent.dart';
+import '../../../core/theme/app_colors.dart';
 
 class RingkasanBeranda extends StatefulWidget {
   final List<Talent> talents;
@@ -13,7 +13,7 @@ class RingkasanBeranda extends StatefulWidget {
 }
 
 class _RingkasanBerandaState extends State<RingkasanBeranda> {
-  int _heroTab = 0; // 0 = Harga, 1 = Rating
+  int _heroTab = 0;
 
   @override
   Widget build(BuildContext context) {

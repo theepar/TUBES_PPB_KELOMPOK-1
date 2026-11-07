@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../utils/app_colors.dart';
+import '../../core/theme/app_colors.dart';
 
 class Navbar extends StatelessWidget {
   final int selectedIndex;
@@ -15,15 +15,25 @@ class Navbar extends StatelessWidget {
   static const _items = [
     _NavItem('Beranda', Icons.home_rounded),
     _NavItem('Katalog', Icons.search_rounded),
+    _NavItem('Riwayat', Icons.receipt_long_outlined),
+    _NavItem('Favorit', Icons.favorite_border),
     _NavItem('Profil', Icons.person_outline_rounded),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+      decoration: BoxDecoration(
         color: Colors.white,
-        border: Border(top: BorderSide(color: AppColors.track)),
+        borderRadius: BorderRadius.circular(32),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x120B1B3A),
+            blurRadius: 24,
+            offset: Offset(0, 6),
+          ),
+        ],
       ),
       child: SafeArea(
         top: false,
@@ -35,9 +45,15 @@ class Navbar extends StatelessWidget {
                 Expanded(
                   child: InkWell(
                     onTap: () => onDestinationSelected(i),
-                    borderRadius: BorderRadius.circular(12),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 6),
+                    borderRadius: BorderRadius.circular(24),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: i == selectedIndex
+                            ? AppColors.primary
+                            : Colors.transparent,
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -45,7 +61,7 @@ class Navbar extends StatelessWidget {
                             _items[i].icon,
                             size: 22,
                             color: i == selectedIndex
-                                ? AppColors.primary
+                                ? Colors.white
                                 : AppColors.inkSoft,
                           ),
                           const SizedBox(height: 2),
@@ -57,7 +73,7 @@ class Navbar extends StatelessWidget {
                                   ? FontWeight.bold
                                   : FontWeight.normal,
                               color: i == selectedIndex
-                                  ? AppColors.primary
+                                  ? Colors.white
                                   : AppColors.inkSoft,
                             ),
                           ),
