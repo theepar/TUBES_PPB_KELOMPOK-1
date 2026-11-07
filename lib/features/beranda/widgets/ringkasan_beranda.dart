@@ -13,7 +13,7 @@ class RingkasanBeranda extends StatefulWidget {
 }
 
 class _RingkasanBerandaState extends State<RingkasanBeranda> {
-  int _heroTab = 0; // 0 = Harga, 1 = Rating
+  int _heroTab = 0;
 
   @override
   Widget build(BuildContext context) {
