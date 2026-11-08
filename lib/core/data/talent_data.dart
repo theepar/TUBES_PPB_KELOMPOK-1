@@ -1,0 +1,65 @@
+import '../models/talent.dart';
+import '../models/paket_jasa.dart';
+
+final List<Talent> daftarTalent = [
+  Talent(
+    id: 't1',
+    lokasi: 'Jakarta',
+    nama: 'Rizky Aditya',
+    bidang: 'Edit Video Pendek (Reels/TikTok)',
+    paketLayanan: const [
+      PaketJasa(nama: 'Video singkat', harga: 50000),
+      PaketJasa(nama: 'Video promosi', harga: 85000),
+      PaketJasa(nama: 'Video lengkap', harga: 140000),
+    ],
+    rating: 4.9,
+    jumlahUlasan: 120,
+    jumlahOrder: 320,
+    deskripsi: 'Video editor 3 tahun yang berspesialisasi dalam konten media sosial berdurasi pendek. Menguasai Premiere Pro, CapCut Pro, dan DaVinci Resolve.',
+    portfolioUrl: 'https://example.com/rizky',
+  ),
+  Talent(
+    id: 't2',
+    lokasi: 'Bandung',
+    ownerId: 'seller2',
+    nama: 'Sari Dewi',
+    bidang: 'Desain Thumbnail YouTube',
+    paketLayanan: const [PaketJasa(nama: '1 Thumbnail', harga: 35000)],
+    rating: 4.8,
+    jumlahUlasan: 88,
+    jumlahOrder: 210,
+    deskripsi: 'Desainer thumbnail yang fokus pada tampilan menarik klik untuk kreator YouTube.',
+  ),
+  Talent(
+    id: 't3',
+    lokasi: 'Bandung',
+    ownerId: 'seller3',
+    nama: 'Budi Santoso',
+    bidang: 'Tutor Koding (Python & Web)',
+    paketLayanan: const [
+      PaketJasa(nama: 'Sesi 60 menit', harga: 75000),
+      PaketJasa(nama: 'Paket 4 sesi', harga: 260000),
+    ],
+    rating: 4.7,
+    jumlahUlasan: 65,
+    jumlahOrder: 150,
+    deskripsi: 'Tutor pemrograman untuk pemula. Mengajar Python, HTML, CSS, dan JavaScript dengan contoh proyek nyata.',
+    portfolioUrl: 'https://example.com/budi',
+  ),
+  Talent(
+    id: 't4',
+    lokasi: 'Surabaya',
+    ownerId: 'seller4',
+    nama: 'Maya Putri',
+    bidang: 'Penulisan Konten & Artikel SEO',
+    paketLayanan: const [
+      PaketJasa(nama: 'Artikel 500 kata', harga: 40000),
+      PaketJasa(nama: 'Artikel 1000 kata', harga: 70000),
+      PaketJasa(nama: 'Artikel 1500 kata', harga: 110000),
+    ],
+    rating: 4.6,
+    jumlahUlasan: 54,
+    jumlahOrder: 130,
+    deskripsi: 'Penulis artikel SEO dan copywriting untuk blog, toko online, dan media sosial.',
+  ),
+];
