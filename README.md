@@ -62,12 +62,6 @@ node scripts/capture-mobile.cjs
 
 Script menunggu render Flutter sebelum mengambil screenshot viewport 390 x 844. Script menggunakan WebSocket bawaan Node.js 22+ dan tidak membutuhkan paket browser tambahan. Server screenshot hanya menyajikan frontend statis.
 
-```powershell
-flutter test --no-pub test/frontend_test.dart
-```
-
-Pemeriksaan meliputi login tiga role, tab utama pembeli/admin, formulir tambah jasa, dan alur pesanan dummy sampai keputusan admin.
-
 ## Halaman dan Fitur
 
 Aplikasi ini merupakan demo frontend dengan data dummy dalam memori. Tidak ada database, API, Supabase, atau Midtrans yang terhubung. Data kembali ke awal saat aplikasi dimulai ulang. Hot reload dapat mempertahankan state; gunakan hot restart untuk mengulang demo dari awal.
