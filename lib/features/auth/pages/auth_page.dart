@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/data/demo_store.dart';
 import '../../../core/widgets/demo_ui.dart';
+import '../../../core/widgets/sewaskill_logo.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/utils/validators.dart';
@@ -37,16 +38,12 @@ class _AuthPageState extends State<AuthPage> {
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 480),
+            constraints: const BoxConstraints(maxWidth: 360),
             child: ListView(
               shrinkWrap: true,
               padding: const EdgeInsets.all(24),
               children: [
-                const Icon(
-                  Icons.handshake_outlined,
-                  size: 48,
-                  color: AppColors.primary,
-                ),
+                const Center(child: SewaSkillLogo()),
                 const SizedBox(height: 16),
                 const Text(
                   'SewaSkill',
@@ -159,13 +156,17 @@ class _AuthPageState extends State<AuthPage> {
                   spacing: 8,
                   runSpacing: 8,
                   children: [
-                    for (final role in ['pencari', 'penyedia', 'admin'])
+                    for (final akun in const [
+                      ('pencari', 'Pembeli'),
+                      ('penyedia', 'Penjual'),
+                      ('admin', 'Admin'),
+                    ])
                       OutlinedButton(
                         onPressed: () => jalankanAksi(
                           context,
-                          () => DemoStore.instance.loginDemo(role),
+                          () => DemoStore.instance.loginDemo(akun.$1),
                         ),
-                        child: Text('Demo $role'),
+                        child: Text('Demo ${akun.$2}'),
                       ),
                   ],
                 ),
