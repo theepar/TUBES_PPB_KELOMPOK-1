@@ -35,6 +35,39 @@ Aplikasi ini dikembangkan menggunakan **Flutter** dan **Dart** dengan antarmuka 
 
 ---
 
+## Mode frontend mandiri
+
+Flutter saat ini memakai data demo lokal dalam memori. Backend/API tidak perlu dijalankan. Login demo Pembeli, Penjual, dan Admin tersedia di halaman masuk. Pembayaran menggunakan simulasi berhasil/gagal; tidak memanggil Midtrans. Data berubah selama aplikasi berjalan dan kembali ke awal setelah restart.
+
+### Jalankan dan ambil screenshot
+
+```powershell
+flutter run --no-pub -d chrome
+```
+
+Jika dependency belum tersedia, jalankan `flutter pub get` terlebih dahulu. Pada Windows, pesan "Building with plugins requires symlink support" berarti Developer Mode Windows perlu diaktifkan. Opsi `--no-pub` dapat dipakai setelah dependency berhasil diunduh.
+
+Screenshot hasil pemeriksaan tersedia di `artifacts/screenshots/`. Folder ini tidak masuk Git. Untuk mengambil ulang lewat browser Brave khusus yang berjalan pada CDP `127.0.0.1:9222`, sajikan hasil build lalu jalankan script screenshot:
+
+```powershell
+flutter build web --no-pub
+python -m http.server 5178 --bind 127.0.0.1 --directory build/web
+```
+
+Di terminal lain:
+
+```powershell
+node scripts/capture-mobile.cjs
+```
+
+Script menunggu render Flutter sebelum mengambil screenshot viewport 390 x 844. Script menggunakan WebSocket bawaan Node.js 22+ dan tidak membutuhkan paket browser tambahan. Server screenshot hanya menyajikan frontend statis.
+
+```powershell
+flutter test --no-pub test/frontend_test.dart
+```
+
+Pemeriksaan meliputi login tiga role, tab utama pembeli/admin, formulir tambah jasa, dan alur pesanan dummy sampai keputusan admin.
+
 ## Halaman dan Fitur
 
 Aplikasi ini merupakan demo frontend dengan data dummy dalam memori. Tidak ada database, API, Supabase, atau Midtrans yang terhubung. Data kembali ke awal saat aplikasi dimulai ulang. Hot reload dapat mempertahankan state; gunakan hot restart untuk mengulang demo dari awal.
