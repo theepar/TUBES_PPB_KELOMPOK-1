@@ -3,10 +3,10 @@ import 'dart:ui' show PointerDeviceKind;
 import 'package:flutter/material.dart';
 
 import '../core/theme/app_spacing.dart';
+import '../features/admin/pages/admin_shell_page.dart';
 
 import 'main_page.dart';
 import '../features/auth/pages/auth_page.dart';
-import '../features/admin/pages/admin_shell_page.dart';
 import '../core/data/demo_store.dart';
 import '../core/theme/app_colors.dart';
 
@@ -28,6 +28,7 @@ class SewaSkillApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: AppColors.primary),
         fontFamily: 'Roboto',
         textTheme: const TextTheme(
           bodyMedium: TextStyle(color: AppColors.ink),
