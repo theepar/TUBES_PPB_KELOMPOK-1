@@ -1,11 +1,11 @@
 {
-    "name": "tubes_ppb_kelompok_1",
-    "short_name": "tubes_ppb_kelompok_1",
+    "name": "SewaSkill",
+    "short_name": "SewaSkill",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#faf9f7",
+    "theme_color": "#2854ff",
+    "description": "Temukan teman ahli untuk ide berikutnya.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
